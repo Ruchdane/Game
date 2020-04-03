@@ -4,6 +4,7 @@
 #define TAILLE 18
 #define TEST 0
 #include "SDL.h"
+#define Failed_case -100
 #include"SDL_image.h"
 #include "SDL_ttf.h"
 #include "fonction.h"
@@ -20,23 +21,24 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 	int t[TAILLE][TAILLE]={0};
 	SDL_SetRenderDrawColor(renderer,0,0,0,225);
 	SDL_RenderClear(renderer);
-	for(;k;k++)
+	for(;k!=Failed_case;)
 	{
 		if(init0(t,k))
 		{
 		init1(t,3,ecran,renderer,textures);
-		
-		
+		SDL_RenderPresent(renderer);
+		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(renderer,0,0,0,225);
 		do
 			{
-				SDL_SetRenderDrawColor(renderer,0,0,0,225);
-				SDL_RenderClear(renderer);
 				SDL_WaitEvent(&event);
-				j=action(event,t,j);
 				if(event.type==SDL_KEYDOWN)
-					SDL_RenderClear(renderer);		
-				init1(t,j,ecran,renderer,textures);
-				SDL_RenderPresent(renderer);
+				{
+					judge(&j,t,event.key.keysym.sym);
+					init1(t,j,ecran,renderer,textures);
+					SDL_RenderPresent(renderer);
+					SDL_RenderClear(renderer);
+				}
 			}while(event.key.keysym.sym!=SDLK_ESCAPE&&win(t));
 
 		if(!win(t))
@@ -53,13 +55,18 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 				{
 					SDL_WaitEvent(&event);
 				}
-				while (event.key.keysym.sym!=SDLK_ESCAPE);
+				while (event.type!=SDL_KEYDOWN);
 					
 				SDL_RenderClear(renderer);
-					
-				k=menuButton(ecran,renderer,3,
-			CreateButton(k+1,50,10,2,2,0,0,"suivant"),
-			CreateButton(k-1,50,10,2,2,0,50,"precedent"),CreateButton(-1,50,10,2,2,0,100,"exit"));
+				if(k!=1)
+					k=menuButton(ecran,renderer,3,CreateButton(k+1,50,10,2,2,0,0,"suivant"),CreateButton(k-1,50,10,2,2,0,50,"precedent")
+													,CreateButton(Failed_case,50,10,2,2,0,100,"exit"));
+				else
+					k=menuButton(ecran,renderer,2,CreateButton(k+1,50,10,2,2,0,0,"suivant"),
+													CreateButton(Failed_case,50,10,2,2,0,100,"exit"));
+			
+
+				
 			}
 			
 		}
@@ -79,18 +86,14 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 	SDL_Event event;
 	FILE *file;
 	int s,s1,s2;
-	SDL_Rect om;
+	SDL_Rect om={0,0,PIX,PIX};
 	int t[TAILLE][TAILLE]={0};
-	if(SDL_SetRenderDrawColor(renderer,0,0,225,126)==-1)
+	if(SDL_SetRenderDrawColor(renderer,0,0,225,1)==-1)
 		{
 			for(int i=0;i!=10;i++)
 				SDL_DestroyTexture(textures[i]);
 			SDL_stop("Renderer couleur non change",ecran,renderer,NULL);
 		}
-
-	/*bleu=SDL_CreateRGBSurface(SDL_HWSURFACE,34,34,32,0,0,0,0);
-	SDL_FillRect(bleu,NULL,SDL_MapRGB(ecran->format,0,0,225));
-			SDL_SetAlpha(bleu, SDL_SRCALPHA, 126);*//*creation de surface bleu transparente*/
 
 	init1(t,0,ecran,renderer,textures);
 	
@@ -243,7 +246,7 @@ int main (int argc, char *argv[])
 			jouer(ecran,renderer,textures,1);
 			break;
 	
-			case 5 :
+			case 2 :
 			{
 				niveau(ecran,renderer,textures);
 				jouer(ecran,renderer,textures,-1);

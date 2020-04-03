@@ -116,7 +116,7 @@ int init0 (int t[TAILLE][TAILLE],int j)
   
 	fscanf(niveau,"(%d,%d),",&s1,&s2);
 	if(2*TAILLE-s1-s2)/*nohomo*/
-		t[s1][s1]=5;
+		t[s1][s2]=5;
 	else
 	  printf("coordonates of mario couldn't be loaded");
 	for(s1=0;s1!=TAILLE;s1++)                            
@@ -141,8 +141,8 @@ void translate (int t[TAILLE][TAILLE])
 	niveau=fopen("niveaux/perso","w+");
 	for(s1=0;s1!=TAILLE;s1++)                            
 		for(s2=0;s2!=TAILLE;s2++)
-	if(t[s1][s2]==2)
-	s++;
+			if(t[s1][s2]==2 || t[s1][s2]==4 )
+				s++;
 
 	fprintf(niveau,"%d,",s);
 
@@ -164,30 +164,28 @@ void translate (int t[TAILLE][TAILLE])
 		5=mario
 	*/
 
- for(s1=0;s1!=TAILLE;s1++)                            
-   for(s2=0;s2!=TAILLE;s2++)
-	   if(t[s1][s2]==2||t[s1][s2]==4)
-	 fprintf(niveau,"(%d,%d),",s1,s2);
- 
- for(s1=0;s1!=TAILLE;s1++)                            
-   for(s2=0;s2!=TAILLE;s2++)
-	   if(t[s1][s2]==3||t[s1][s2]==4)
-	 fprintf(niveau,"(%d,%d),",s1,s2);
- 
- for(s1=0;s1!=TAILLE&&brak;s1++)                            
-   for(s2=0;s2!=TAILLE&&brak;s2++)
-	   if(t[s1][s2]==5)
-	 {
-	 fprintf(niveau,"(%d,%d),",s1,s2);
-	 brak=0;
-	 }
+	for(s1=0;s1!=TAILLE;s1++)                            
+		for(s2=0;s2!=TAILLE;s2++)
+			if(t[s1][s2]==2||t[s1][s2]==4)
+				fprintf(niveau,"(%d,%d),",s1,s2);
+
+	for(s1=0;s1!=TAILLE;s1++)                            
+		for(s2=0;s2!=TAILLE;s2++)
+			if(t[s1][s2]==3||t[s1][s2]==4)
+				fprintf(niveau,"(%d,%d),",s1,s2);
+
+	for(s1=0;s1!=TAILLE&&brak;s1++)                            
+		for(s2=0;s2!=TAILLE&&brak;s2++)
+			if(t[s1][s2]==5)
+			{
+				fprintf(niveau,"(%d,%d),",s1,s2);
+				brak=0;
+			}
 
  fclose(niveau);
 }
 void init1 (int t[TAILLE][TAILLE],int j,
-			SDL_Window *ecran,SDL_Renderer* renderer,SDL_Texture **textures
-			/* SDL_Texture *caise[2], 
-			SDL_Texture *objectif, SDL_Texture *mario[4],*/ )
+			SDL_Window *ecran,SDL_Renderer* renderer,SDL_Texture **textures)
 
 {
 	int s1=0,s2=0,b=1,k;
@@ -214,56 +212,20 @@ void init1 (int t[TAILLE][TAILLE],int j,
 		2=perle verte;
 		3=boite;
 		4=2+3;
-		5=mario
+		5,6,7,8=mario
+		9=2+(5,6,7,8)
 	*/
 
 		k=t[s1][s2];
 		if(k<5)
 			SDL_RenderCopy(renderer,textures[k],NULL,&cadre);
-		else
+		else if(k<9)
 			SDL_RenderCopy(renderer,textures[k+j],NULL,&cadre);
+		else
+		{
+			SDL_RenderCopy(renderer,textures[2],NULL,&cadre);
+			SDL_RenderCopy(renderer,textures[5+j],NULL,&cadre);
+		}
+		
 	 }
 }
-int action (SDL_Event event, int t[TAILLE][TAILLE],int j)
-{
-	if(event.type==SDL_KEYDOWN)
-	{
-		judge(&j,t,event.key.keysym.sym);
-	}
-	if(TEST)
-		{
-			verification(t);
-			printf("\n%d\n",j);
-		}
-	return j;
-}
-void print(SDL_Window *ecran ,SDL_Renderer *renderer,char s[],int c,int s1,int s2)
-{
-	SDL_Rect om;
-	SDL_Surface *test;
-	SDL_Texture *texture;
-	TTF_Font *blazed;
-	SDL_Color palegold={225,192,0};
-	SDL_Color color={225,225,225};
-	if(c)
-	color=palegold;
-	om.x=s1;
-	om.y=s2;
-	
-	TTF_Init();
-	blazed=TTF_OpenFont("Font/Champagne & Limousines Bold.ttf",20);
-	test=TTF_RenderText_Blended(blazed,s, color);
-	SDL_CreateTextureFromSurface(renderer,test);
-
-	SDL_QueryTexture(texture,NULL,NULL,&om.w,&om.h);
-	SDL_RenderCopy(renderer,texture,NULL,&om);
-	SDL_RenderPresent(renderer);
-	SDL_DestroyTexture(texture);
-	SDL_FreeSurface(test);
-	TTF_CloseFont(blazed);
-
-	TTF_Quit();
-
-}
-	
-

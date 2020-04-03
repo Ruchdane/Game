@@ -80,7 +80,7 @@ int renderButton(Button button,SDL_Window* window,SDL_Renderer* renderer,TTF_Fon
 		if(state==2)
 			return button.value;
 		if(state==1)
-			return button.value+100;
+			return 100;
 		else 
 			return 0;
 }
@@ -135,7 +135,7 @@ int menuButton(SDL_Window* window,SDL_Renderer* renderer,int bn,Button *b1, ...)
 						}
 					else
 						k=renderButton(*b[j],window,renderer,writer,0);
-					if(k-b[j]->value==100)
+					if(k==100)
 						{
 							i=j;
 							k=0;

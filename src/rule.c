@@ -24,12 +24,12 @@ int nohomo(int z)/*eviter des ereiur de segmentation*/
 
 int win (int t[TAILLE][TAILLE])
 {
-	int brak=0,s1,s2;
+	int s1,s2;
 	for(s1=0;s1!=TAILLE;s1++)
 		for(s2=0;s2!=TAILLE;s2++)
-			if(t[s1][s2]==2)
-			brak=1;
-  return brak;
+			if(t[s1][s2]==2 || t[s1][s2]==9 )
+				return 1;
+  return 0;
 }
 
 /*		switch(key)
@@ -56,7 +56,7 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 	int s1=0,s2=0,j,result=1,stop=1;
 	for(;s1!=TAILLE && stop ;s1++)
 		for(s2=0;s2!=TAILLE && stop;s2++)
-			if(t[s1][s2]==5)
+			if(t[s1][s2]==5 || t[s1][s2]==9 )
 				stop=0;
 	s1--;
 	s2--;
@@ -69,39 +69,74 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 			{
 				case 0:
 				{
-					t[s1][s2]=0;
+					t[s1][s2]=(t[s1][s2]-5)/2;
 					t[s1][nohomo(s2-1)]=5;
 				}
-			break;
+				break;
+				
+				
+				case 2:
+				{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[s1][nohomo(s2-1)]=9;
+				}
+				break;
 
-			case 3:
+				break;
+				case 3:
 				switch(t[s1][nohomo(s2-2)])
 				{
 					case 0:
 					{
-						t[s1][s2]=0;
+						t[s1][s2]=(t[s1][s2]-5)/2;
 						t[s1][nohomo(s2-1)]=5;
 						t[s1][nohomo(s2-2)]=3;
 					}
 					break;
 					
 					case 2:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[s1][nohomo(s2-1)]=5;
+						t[s1][nohomo(s2-2)]=4;
+					}
+					
+					break;
+					
+					default:
+					result=0;
+					break;
+				}
+				break;
+
+				case 4:
+				switch(t[s1][nohomo(s2-2)])
+				{
+					case 0:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[s1][nohomo(s2-1)]=9;
+						t[s1][nohomo(s2-2)]=3;
+					}
+					break;
+					
+					case 2:
 						{
-							t[s1][s2]=0;
-							t[s1][nohomo(s2-1)]=5;
+							t[s1][s2]=(t[s1][s2]-5)/2;
+							t[s1][nohomo(s2-1)]=9;
 							t[s1][nohomo(s2-2)]=4;
 						}   
 						
 						break;
 					default:
-				result=0;
-						break;
+					result=0;
+					break;
 				}
 				break;
 
-			default:
+				default:
 				result=0;
-			break;
+				break;
 			} 
 		
 		}
@@ -114,26 +149,53 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 				{
 					case 0:
 					{
-						t[s1][s2]=0;
+						t[s1][s2]=(t[s1][s2]-5)/2;
 						t[nohomo(s1-1)][s2]=5;
 					}
 					break;
-			
-				case 3:
+					case 2:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[nohomo(s1-1)][s2]=9;
+					}
+					break;
+
+					case 3:
 					switch(t[nohomo(s1-2)][s2])
 					{
 						case 0:
 						{
-							t[s1][s2]=0;
+							t[s1][s2]=(t[s1][s2]-5)/2;
 							t[nohomo(s1-1)][s2]=5;
 							t[nohomo(s1-2)][s2]=3;
 						}
 						break;
-
 						case 2:
 						{
-							t[s1][s2]=0;
+							t[s1][s2]=(t[s1][s2]-5)/2;
 							t[nohomo(s1-1)][s2]=5;
+							t[nohomo(s1-2)][s2]=4;
+						}
+						break;
+					default:
+				result=0;
+						break;
+					}
+					break;
+					case 4:
+					switch(t[nohomo(s1-2)][s2])
+					{
+						case 0:
+						{
+							t[s1][s2]=(t[s1][s2]-5)/2;
+							t[nohomo(s1-1)][s2]=9;
+							t[nohomo(s1-2)][s2]=3;
+						}
+						break;
+						case 2:
+						{
+							t[s1][s2]=(t[s1][s2]-5)/2;
+							t[nohomo(s1-1)][s2]=9;
 							t[nohomo(s1-2)][s2]=4;
 						}
 						break;
@@ -153,36 +215,76 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 			break;
 			
 		case SDLK_DOWN:
-		{j=2;
+		{
+			j=2;
 			switch(t[nohomo(s1+1)][s2])
-			{ case 0:
-				{ t[s1][s2]=0;
-				t[nohomo(s1+1)][s2]=5;}
-				break;
-				
-			case 3:
-				switch(t[nohomo(s1+2)][s2])
-				{case 0:
-				{t[s1][s2]=0;
-				t[nohomo(s1+2)][s2]=3;
-				t[nohomo(s1+1)][s2]=5;
+			{
+				 case 0:
+				{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[nohomo(s1+1)][s2]=5;
 				}
 				break;
+				
 				case 2:
-				{t[s1][s2]=0;
-				t[nohomo(s1+2)][s2]=4;
-				t[nohomo(s1+1)][s2]=5;
+				{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[nohomo(s1+1)][s2]=9;
 				}
 				break;
 			
-				default:
-				result=0;
+				case 3:
+				switch(t[nohomo(s1+2)][s2])
+				{
+					case 0:
+					{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[nohomo(s1+2)][s2]=3;
+					t[nohomo(s1+1)][s2]=5;
+					}
+					break;
+					
+					case 2:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[nohomo(s1+2)][s2]=4;
+						t[nohomo(s1+1)][s2]=5;
+					}
+					break;
+					
+					default:
+					result=0;
+					break;
+				}
 				break;
+				
+				case 4:
+				switch(t[nohomo(s1+2)][s2])
+				{
+					case 0:
+					{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[nohomo(s1+2)][s2]=3;
+					t[nohomo(s1+1)][s2]=9;
+					}
+					break;
+					
+					case 2:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[nohomo(s1+2)][s2]=4;
+						t[nohomo(s1+1)][s2]=9;
+					}
+					break;
+					
+					default:
+					result=0;
+					break;
 				}
 				break;
 				
 			default:
-				result=0;
+			result=0;
 			break;
 			}
 			
@@ -190,34 +292,73 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 		break;
 		
 		case SDLK_RIGHT:
-		{j=3;
+		{
+			j=3;
 			switch(t[s1][nohomo(s2+1)])
-			{case 0:
-			{t[s1][s2]=0;
-			t[s1][nohomo(s2+1)]=5;}
-			break;
-			
-			case 3:
-			switch(t[s1][nohomo(s2+2)])
-			{case 0:
-				{t[s1][s2]=0;
-				t[s1][nohomo(s2+2)]=3;
-				t[s1][nohomo(s2+1)]=5;
+			{
+				case 0:
+				{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[s1][nohomo(s2+1)]=5;
 				}
 				break;
-			case 2:
-				{t[s1][s2]=0;
-				t[s1][nohomo(s2+2)]=4;
-				t[s1][nohomo(s2+1)]=5;
+
+				case 2:
+				{
+					t[s1][s2]=(t[s1][s2]-5)/2;
+					t[s1][nohomo(s2+1)]=9;
 				}
 				break;
+				
+				case 3:
+				switch(t[s1][nohomo(s2+2)])
+				{
+					case 0:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[s1][nohomo(s2+2)]=3;
+						t[s1][nohomo(s2+1)]=5;
+					}
+					break;
+					
+					case 2:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[s1][nohomo(s2+2)]=4;
+						t[s1][nohomo(s2+1)]=5;
+					}
+					break;
 			
-			default:
-				result=0;
-				break;
-			}
+					default:
+					result=0;
+					break;
+				}
 			
-			default:
+				case 4:
+				switch(t[s1][nohomo(s2+2)])
+				{
+					case 0:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[s1][nohomo(s2+2)]=3;
+						t[s1][nohomo(s2+1)]=9;
+					}
+					break;
+					
+					case 2:
+					{
+						t[s1][s2]=(t[s1][s2]-5)/2;
+						t[s1][nohomo(s2+2)]=4;
+						t[s1][nohomo(s2+1)]=9;
+					}
+					break;
+			
+					default:
+					result=0;
+					break;
+				}
+			
+				default:
 				result=0;
 				break;
 			}
@@ -228,7 +369,7 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 			break ;
 			
 		default:
-				result=0;
+		result=0;
 		break;
 	}
 	*k=j;
