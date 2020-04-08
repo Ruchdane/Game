@@ -5,10 +5,12 @@
 #include "SDL.h"
 #include"SDL_image.h"
 #include "SDL_ttf.h"
-#include "fonction.h"
 #include "structure.h"
-#include "Gui.h"
 #include "rule.h"
+#include "fonction.h"
+
+#include "Gui.h"
+
 int nohomo(int z)/*eviter des ereiur de segmentation*/
 
 {
@@ -22,7 +24,7 @@ int nohomo(int z)/*eviter des ereiur de segmentation*/
 	return n;
 }
 
-int win (int t[TAILLE][TAILLE])
+int win (int **t)
 {
 	int s1,s2;
 	for(s1=0;s1!=TAILLE;s1++)
@@ -32,26 +34,115 @@ int win (int t[TAILLE][TAILLE])
   return 0;
 }
 
-/*		switch(key)
+void verdict(int *pos,int* pas1,int* pas2,int *result)
+{
+	switch(*pas1)
 	{
-		case SDLK_LEFT:
-		return 0;
+		case 0:
+		{
+			*pos=(*pos-5)/2;
+			*pas1=5;
+		}
 		break;
 		
-		case SDLK_UP:
-		return 1;
 		
-		case SDLK_DOWN:
-		return 2;
+		case 2:
+		{
+			*pos=(*pos-5)/2;
+			*pas1=9;
+		}
 		break;
-		
-		case SDLK_RIGHT:
-		return 3
-		break ;
-	}
 
-}*/
-int judge(int *k,int t[TAILLE][TAILLE],int key)
+		break;
+		case 3:
+		switch(*pas2)
+		{
+			case 0:
+			{
+				*pos=(*pos-5)/2;
+				*pas1=5;
+				*pas2=3;
+			}
+			break;
+			
+			case 2:
+			{
+				*pos=(*pos-5)/2;
+				*pas1=5;
+				*pas2=4;
+			}
+			
+			break;
+			
+			default:
+			*result=0;
+			break;
+		}
+		break;
+
+		case 4:
+		switch(*pas2)
+		{
+			case 0:
+			{
+				*pos=(*pos-5)/2;
+				*pas1=9;
+				*pas2=3;
+			}
+			break;
+			
+			case 2:
+				{
+					*pos=(*pos-5)/2;
+					*pas1=9;
+					*pas2=4;
+				}   
+				
+				break;
+			default:
+			*result=0;
+			break;
+		}
+		break;
+
+		default:
+		*result=0;
+		break;
+	} 
+
+}
+int estMouvement(SDL_Event event)
+{
+	int key=event.key.keysym.sym;
+	return event.type==SDL_KEYDOWN && key-SDLK_RIGHT<=3 && key-SDLK_RIGHT>=0;
+}
+
+int estAnnulation(SDL_Event event)
+{
+	return event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_BACKSPACE;
+}
+
+int estQuiter(SDL_Event event)
+{
+	return event.type==SDL_QUIT;
+}
+int estRecommencer(SDL_Event event)
+{
+	return event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_ESCAPE;
+}
+void annuler(int *j,int ***t,int k,Pile *actions)
+{
+	Pile *tmp;
+	tmp=Pinverse(actions);
+	Mfree(*t,TAILLE);
+	
+	*t=Minitialiser(TAILLE,TAILLE);
+	init0(*t,k);
+	for(;tmp->premier->suivant!=NULL;depiler(tmp))
+		judge(j,*t,tmp->premier->nombre,actions);
+	Pfree(tmp);
+}
+int judge(int *k,int **t,int key,Pile *actions)
 {
 	int s1=0,s2=0,j,result=1,stop=1;
 	for(;s1!=TAILLE && stop ;s1++)
@@ -60,318 +151,42 @@ int judge(int *k,int t[TAILLE][TAILLE],int key)
 				stop=0;
 	s1--;
 	s2--;
+
 	switch(key)
 	{
+		case SDLK_RIGHT:
+		{
+			j=3;
+			verdict(&t[s1][s2],&t[s1][nohomo(s2+1)],&t[s1][nohomo(s2+2)],&result);
+		}
+		break;
 		case SDLK_LEFT:
 		{
-				j=0;
-			switch(t[s1][nohomo(s2-1)])
-			{
-				case 0:
-				{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[s1][nohomo(s2-1)]=5;
-				}
-				break;
-				
-				
-				case 2:
-				{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[s1][nohomo(s2-1)]=9;
-				}
-				break;
-
-				break;
-				case 3:
-				switch(t[s1][nohomo(s2-2)])
-				{
-					case 0:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2-1)]=5;
-						t[s1][nohomo(s2-2)]=3;
-					}
-					break;
-					
-					case 2:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2-1)]=5;
-						t[s1][nohomo(s2-2)]=4;
-					}
-					
-					break;
-					
-					default:
-					result=0;
-					break;
-				}
-				break;
-
-				case 4:
-				switch(t[s1][nohomo(s2-2)])
-				{
-					case 0:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2-1)]=9;
-						t[s1][nohomo(s2-2)]=3;
-					}
-					break;
-					
-					case 2:
-						{
-							t[s1][s2]=(t[s1][s2]-5)/2;
-							t[s1][nohomo(s2-1)]=9;
-							t[s1][nohomo(s2-2)]=4;
-						}   
-						
-						break;
-					default:
-					result=0;
-					break;
-				}
-				break;
-
-				default:
-				result=0;
-				break;
-			} 
-		
+			j=0;
+			verdict(&t[s1][s2],&t[s1][nohomo(s2-1)],&t[s1][nohomo(s2-2)],&result);
+			
+		}
+		break;
+		case SDLK_DOWN:
+		{
+			j=2;
+			verdict(&t[s1][s2],&t[nohomo(s1+1)][s2],&t[nohomo(s1+2)][s2],&result);
 		}
 		break;
 		
 		case SDLK_UP:
-			{
-				j=1;
-				switch(t[nohomo(s1-1)][s2])
-				{
-					case 0:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[nohomo(s1-1)][s2]=5;
-					}
-					break;
-					case 2:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[nohomo(s1-1)][s2]=9;
-					}
-					break;
-
-					case 3:
-					switch(t[nohomo(s1-2)][s2])
-					{
-						case 0:
-						{
-							t[s1][s2]=(t[s1][s2]-5)/2;
-							t[nohomo(s1-1)][s2]=5;
-							t[nohomo(s1-2)][s2]=3;
-						}
-						break;
-						case 2:
-						{
-							t[s1][s2]=(t[s1][s2]-5)/2;
-							t[nohomo(s1-1)][s2]=5;
-							t[nohomo(s1-2)][s2]=4;
-						}
-						break;
-					default:
-				result=0;
-						break;
-					}
-					break;
-					case 4:
-					switch(t[nohomo(s1-2)][s2])
-					{
-						case 0:
-						{
-							t[s1][s2]=(t[s1][s2]-5)/2;
-							t[nohomo(s1-1)][s2]=9;
-							t[nohomo(s1-2)][s2]=3;
-						}
-						break;
-						case 2:
-						{
-							t[s1][s2]=(t[s1][s2]-5)/2;
-							t[nohomo(s1-1)][s2]=9;
-							t[nohomo(s1-2)][s2]=4;
-						}
-						break;
-					default:
-				result=0;
-						break;
-					}
-					break;
-
-			default:
-				result=0;
-				break;
-			}
-			s1=nohomo(s1);
-		
-			}
-			break;
-			
-		case SDLK_DOWN:
 		{
-			j=2;
-			switch(t[nohomo(s1+1)][s2])
-			{
-				 case 0:
-				{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[nohomo(s1+1)][s2]=5;
-				}
-				break;
-				
-				case 2:
-				{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[nohomo(s1+1)][s2]=9;
-				}
-				break;
-			
-				case 3:
-				switch(t[nohomo(s1+2)][s2])
-				{
-					case 0:
-					{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[nohomo(s1+2)][s2]=3;
-					t[nohomo(s1+1)][s2]=5;
-					}
-					break;
-					
-					case 2:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[nohomo(s1+2)][s2]=4;
-						t[nohomo(s1+1)][s2]=5;
-					}
-					break;
-					
-					default:
-					result=0;
-					break;
-				}
-				break;
-				
-				case 4:
-				switch(t[nohomo(s1+2)][s2])
-				{
-					case 0:
-					{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[nohomo(s1+2)][s2]=3;
-					t[nohomo(s1+1)][s2]=9;
-					}
-					break;
-					
-					case 2:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[nohomo(s1+2)][s2]=4;
-						t[nohomo(s1+1)][s2]=9;
-					}
-					break;
-					
-					default:
-					result=0;
-					break;
-				}
-				break;
-				
-			default:
-			result=0;
-			break;
-			}
-			
+			j=1;
+			verdict(&t[s1][s2],&t[nohomo(s1-1)][s2],&t[nohomo(s1-2)][s2],&result);
 		}
 		break;
-		
-		case SDLK_RIGHT:
-		{
-			j=3;
-			switch(t[s1][nohomo(s2+1)])
-			{
-				case 0:
-				{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[s1][nohomo(s2+1)]=5;
-				}
-				break;
-
-				case 2:
-				{
-					t[s1][s2]=(t[s1][s2]-5)/2;
-					t[s1][nohomo(s2+1)]=9;
-				}
-				break;
-				
-				case 3:
-				switch(t[s1][nohomo(s2+2)])
-				{
-					case 0:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2+2)]=3;
-						t[s1][nohomo(s2+1)]=5;
-					}
-					break;
-					
-					case 2:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2+2)]=4;
-						t[s1][nohomo(s2+1)]=5;
-					}
-					break;
-			
-					default:
-					result=0;
-					break;
-				}
-			
-				case 4:
-				switch(t[s1][nohomo(s2+2)])
-				{
-					case 0:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2+2)]=3;
-						t[s1][nohomo(s2+1)]=9;
-					}
-					break;
-					
-					case 2:
-					{
-						t[s1][s2]=(t[s1][s2]-5)/2;
-						t[s1][nohomo(s2+2)]=4;
-						t[s1][nohomo(s2+1)]=9;
-					}
-					break;
-			
-					default:
-					result=0;
-					break;
-				}
-			
-				default:
-				result=0;
-				break;
-			}
-
-			
-		}
-		
-			break ;
-			
 		default:
 		result=0;
 		break;
 	}
+	if(result)
+		empiler(actions,key);
+	
 	*k=j;
 	return result;
 }

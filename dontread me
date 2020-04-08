@@ -1,8 +1,18 @@
- cls
- cd "C:\Users\AMADOU\Desktop\mario_par_ruchdane"
- gcc src\*.c -o bin\mario -I include -I include\SDL -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
- .\bin\mario
+cls
+cd "C:\Users\AMADOU\Desktop\mario_par_ruchdane"
+gcc src\*.c -o bin\mario -I include -I include\SDL -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+.\bin\mario
 
- printf("tsugini omae wa \"%d nani\" to you",i);
- printf("it was i Dio");
- printf(""nigerodayo");
+printf("tsugini omae wa \"%d nani\" to you",i);
+printf("it was i Dio");
+printf("nigerodayo");
+printf("%d Yes i am",i);
+printf("Good bye jojo");
+printf("Yes Yes oh my god");
+printf("this is... requiem");
+printf("Muda Muda ");
+printf("Ora Ora");
+printf("Ayayayayaya");
+
+
+

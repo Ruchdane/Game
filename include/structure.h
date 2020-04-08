@@ -1,0 +1,41 @@
+#ifndef RUCHDANESTRUCT
+#define RUCHDANESTRUCT
+
+typedef struct{
+	int x;
+	int y;
+}Descartes;
+
+typedef struct{
+	int value;
+	Descartes padin;
+	Descartes margin;
+	SDL_Rect cadre;
+	char *message;
+}Button;
+
+
+typedef struct Element
+{
+	int nombre;
+	struct Element* suivant;
+}Element;
+
+typedef struct 
+{
+	Element* premier;
+}Pile;
+
+Button *CreateButton(int value,int  padinx,int  padiny,int marginx,int marginy,int cadrex,int cadrey,char *message);
+
+Pile* Pinitialiser();
+void empiler(Pile*pile,int Nombre);
+int depiler(Pile* pile);
+int Ptaille(Pile* pile);
+void Pfree(Pile *pile);
+void Pafficher(Pile* pile);
+Pile* Pinverse(Pile* pile);
+
+int **Minitialiser(int size,int seze);
+void Mfree(int ** ,int seze);
+#endif

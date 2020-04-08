@@ -9,38 +9,51 @@
 #include "SDL_ttf.h"
 #include "fonction.h"
 #include "structure.h"
-#include "Gui.h"
 #include "rule.h"
+
+#include "Gui.h"
 
 
 void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,int k)
 {
 	SDL_Rect om={0,0,34,34},oom={0,0,34,34};
 	SDL_Event event;
+	Pile *actions;
 	int s,j=0;
-	int t[TAILLE][TAILLE]={0};
-	SDL_SetRenderDrawColor(renderer,0,0,0,225);
-	SDL_RenderClear(renderer);
+	int **t=Minitialiser(TAILLE,TAILLE);
+	
 	for(;k!=Failed_case;)
 	{
 		if(init0(t,k))
 		{
+		actions=Pinitialiser();
 		init1(t,3,ecran,renderer,textures);
 		SDL_RenderPresent(renderer);
-		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer,0,0,0,225);
 		do
 			{
 				SDL_WaitEvent(&event);
-				if(event.type==SDL_KEYDOWN)
+				
+				if(estAnnulation(event) && actions->premier !=NULL)
+					annuler(&j,&t,k,actions);
+				
+				else if(estMouvement(event))
+					judge(&j,t,event.key.keysym.sym,actions);
+
+				else if(estQuiter(event))
 				{
-					judge(&j,t,event.key.keysym.sym);
+					k!=Failed_case;
+					break;
+				}
+				else if(estRecommencer(event))
+					break;
+				else
+					continue;
+
 					init1(t,j,ecran,renderer,textures);
 					SDL_RenderPresent(renderer);
 					SDL_RenderClear(renderer);
-				}
-			}while(event.key.keysym.sym!=SDLK_ESCAPE&&win(t));
 
+			}while( win(t) );
 		if(!win(t))
 			{
 
@@ -74,9 +87,9 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 		{
 			k=-1;
 		}
-		for(int i=0;i!=TAILLE;i++)
-					for(int j=0;j!=TAILLE;j++)
-						t[i][j]=0;
+		Pfree(actions);
+		Mfree(t,TAILLE);
+		t=Minitialiser(TAILLE,TAILLE);
 	}
 	
 }
@@ -87,7 +100,7 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 	FILE *file;
 	int s,s1,s2;
 	SDL_Rect om={0,0,PIX,PIX};
-	int t[TAILLE][TAILLE]={0};
+	int **t={0};
 	if(SDL_SetRenderDrawColor(renderer,0,0,225,1)==-1)
 		{
 			for(int i=0;i!=10;i++)
@@ -130,6 +143,7 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 			s2=nohomo(s2);
 			om.x=s2*PIX;
 			om.y=s1*PIX;
+			SDL_SetRenderDrawColor(renderer,0,0,225,0);
 			SDL_RenderFillRect(renderer,&om);
 			SDL_RenderPresent(renderer);
 	
@@ -201,8 +215,15 @@ int main (int argc, char *argv[])
 	/*------------------------------------*/
 	
 	/*------------------------------------*/
+
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
+	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
+	
+	/*------------------------------------*/
+	
+	/*------------------------------------*/
+
 	ecran = SDL_CreateWindow("Mario Sokoban",
                           SDL_WINDOWPOS_CENTERED,
                           SDL_WINDOWPOS_CENTERED,
@@ -223,9 +244,8 @@ int main (int argc, char *argv[])
 	
 	if(renderer==NULL)
 		SDL_stop("desinateur non  aloue",ecran,NULL,NULL);
-	
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-	
 	textures[0]=TextureFromImage("img/vide.png",ecran,renderer);
 	textures[1]=TextureFromImage("img/mur.png",ecran,renderer);
 	textures[2]=TextureFromImage("img/objectif.png",ecran,renderer);
@@ -236,6 +256,7 @@ int main (int argc, char *argv[])
 	textures[7]=TextureFromImage("img/2.gif",ecran,renderer);
 	textures[8]=TextureFromImage("img/3.gif",ecran,renderer);
 	textures[9]=TextureFromImage("img/images.png",ecran,renderer);
+	
 	while(j)
 	{
 		switch(menuButton(ecran,renderer,3,
@@ -264,6 +285,5 @@ int main (int argc, char *argv[])
 	SDL_DestroyWindow(ecran);
 	TTF_Quit();
 	SDL_Quit();
-	printf("It was i Dio");
 	return 0;
 }

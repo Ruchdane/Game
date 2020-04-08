@@ -5,12 +5,13 @@
 #include "SDL_ttf.h"
 #include "Polynome.h"
 #include "fonction.h"
+#include "structure.h"
 #include "rule.h"
 /*<>*/
 SDL_Texture* TextureFromImage(char *title,SDL_Window* window,SDL_Renderer *renderer)
 {
 		SDL_Surface* surface= IMG_Load(title);
-		SDL_Texture* texture=NULL;
+		SDL_Texture* texture = NULL;
 		SDL_Rect rectangle={0,0,PIX,PIX};
 		if(surface==NULL)
 			SDL_stop("surface non aloue",window,renderer,NULL);
@@ -26,17 +27,18 @@ SDL_Texture* TextureFromImage(char *title,SDL_Window* window,SDL_Renderer *rende
 }
 void  SDL_stop(const char *message,SDL_Window* window,SDL_Renderer *renderer,SDL_Texture *texture)
 {
-	printf("EROR :%s --%s",message,SDL_GetError());
-	/*if(window!=NULL)
+	printf("EROR :%s --%s\n",message,SDL_GetError());
+	if(window!=NULL)
 		SDL_DestroyWindow(window);
 	if(renderer!=NULL)
 		SDL_DestroyRenderer(renderer);
 	if(texture!=NULL)
 		SDL_DestroyTexture(texture);
+	
 	SDL_Quit();
-	exit(EXIT_FAILURE);*/
+	exit(EXIT_FAILURE);
 }
-void verification(int t[TAILLE][TAILLE])/*Inprimer le tableau des des donner-*/
+void verification(int **t)/*Inprimer le tableau des des donner-*/
 
 {
 	int s1,s2;
@@ -50,7 +52,7 @@ void verification(int t[TAILLE][TAILLE])/*Inprimer le tableau des des donner-*/
 	 
 }
 
-int init0 (int t[TAILLE][TAILLE],int j)
+int init0 (int **t,int j)
 {
 	char c;
 	int s=0,s1,s2,s3,nivo[TAILLE]={0};
@@ -97,7 +99,7 @@ int init0 (int t[TAILLE][TAILLE],int j)
 		for(s1=0;s1!=TAILLE;s1++)/*j'initialise le tableau*/
 			fscanf(niveau,"%d,",&nivo[s1]);/*niveau contient un nombre ecrit sur Taille-bit*/
 
-		printf("%d\n",s);/*pour verifier*/
+		
 		for(;s!=0;s--)
 		{
 			fscanf(niveau,"(%d,%d),",&s1,&s2);/*les positions des perles vertes*/
@@ -130,7 +132,7 @@ int init0 (int t[TAILLE][TAILLE],int j)
 	  return 1;
 
 }
-void translate (int t[TAILLE][TAILLE])
+void translate (int **t)
 
 {
 	unsigned int s=0,mask;
@@ -169,7 +171,7 @@ void translate (int t[TAILLE][TAILLE])
 			if(t[s1][s2]==2||t[s1][s2]==4)
 				fprintf(niveau,"(%d,%d),",s1,s2);
 
-	for(s1=0;s1!=TAILLE;s1++)                            
+	for(s1=0;s1!=TAILLE;s1++)
 		for(s2=0;s2!=TAILLE;s2++)
 			if(t[s1][s2]==3||t[s1][s2]==4)
 				fprintf(niveau,"(%d,%d),",s1,s2);
@@ -184,12 +186,15 @@ void translate (int t[TAILLE][TAILLE])
 
  fclose(niveau);
 }
-void init1 (int t[TAILLE][TAILLE],int j,
+void init1 (int **t,int j,
 			SDL_Window *ecran,SDL_Renderer* renderer,SDL_Texture **textures)
 
 {
 	int s1=0,s2=0,b=1,k;
 	SDL_Rect cadre={0,0,34,34};
+	
+	SDL_SetRenderDrawColor(renderer,0,0,0,225);
+	SDL_RenderClear(renderer);
 	/*donc maintenant on a represente tout les TAILLE*PIX*TAILLE*PIX pixel en 144 PIX*PIX
 	Voyez ça comme un changement de reper 
 	donc la position PIX,PIX

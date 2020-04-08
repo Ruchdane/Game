@@ -121,7 +121,6 @@ int menuButton(SDL_Window* window,SDL_Renderer* renderer,int bn,Button *b1, ...)
 
 					case SDLK_RETURN:
 					state=1;
-					printf("It was I Dio\n");
 					break ;
 				}
 			for(j=0;j!=bn && k==0;j++)
@@ -153,6 +152,5 @@ int menuButton(SDL_Window* window,SDL_Renderer* renderer,int bn,Button *b1, ...)
 		for(j=0;j!=bn;free(b[j]),j++);
 		free(b);
 		SDL_SetRenderDrawColor(renderer,0,0,0,225);
-		printf("tsugi  ni omae wa \"%d nani\"to you\n",k);
 		return k;
 }
