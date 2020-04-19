@@ -14,6 +14,13 @@ typedef struct{
 	char *message;
 }Button;
 
+typedef struct 
+{
+	int id;
+	int np;//nombre de perle visible dans le niveau
+	Descartes resolution;
+	int **t;
+}Level;
 
 typedef struct Element
 {
@@ -28,6 +35,9 @@ typedef struct
 
 Button *CreateButton(int value,int  padinx,int  padiny,int marginx,int marginy,int cadrex,int cadrey,char *message);
 
+int Linitialiser (Level *niveau,int j);
+void Lwrite(Level *niveau);
+void Lread(Level *niveau,int j);
 Pile* Pinitialiser();
 void empiler(Pile*pile,int Nombre);
 int depiler(Pile* pile);

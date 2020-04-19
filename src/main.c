@@ -1,7 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
 #define PIX 34
-#define TAILLE 18
 #define TEST 0
 #include "SDL.h"
 #define Failed_case -100
@@ -10,7 +9,7 @@
 #include "fonction.h"
 #include "structure.h"
 #include "rule.h"
-
+#include "ini.h"
 #include "Gui.h"
 
 
@@ -20,28 +19,29 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 	SDL_Event event;
 	Pile *actions;
 	int s,j=0;
-	int **t=Minitialiser(TAILLE,TAILLE);
+	Level *niveau;
+	niveau=malloc(sizeof(*niveau));
 	
 	for(;k!=Failed_case;)
 	{
-		if(init0(t,k))
+		if(Linitialiser(niveau,k))
 		{
 		actions=Pinitialiser();
-		init1(t,3,ecran,renderer,textures);
+		renderLevel(niveau,3,ecran,renderer,textures);
 		SDL_RenderPresent(renderer);
 		do
 			{
 				SDL_WaitEvent(&event);
 				
 				if(estAnnulation(event) && actions->premier !=NULL)
-					annuler(&j,&t,k,actions);
+					annuler(&j,niveau,k,actions);
 				
 				else if(estMouvement(event))
-					judge(&j,t,event.key.keysym.sym,actions);
+					judge(&j,niveau,event.key.keysym.sym,actions);
 
 				else if(estQuiter(event))
 				{
-					k!=Failed_case;
+					k=Failed_case;
 					break;
 				}
 				else if(estRecommencer(event))
@@ -49,19 +49,19 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 				else
 					continue;
 
-					init1(t,j,ecran,renderer,textures);
+					renderLevel(niveau,j,ecran,renderer,textures);
 					SDL_RenderPresent(renderer);
 					SDL_RenderClear(renderer);
 
-			}while( win(t) );
-		if(!win(t))
+			}while( niveau->np);
+		if(!niveau->np)
 			{
 
 				SDL_RenderClear(renderer);
 				om.y=0;
 				om.x=0;
-				om.w=TAILLE*PIX;
-				om.h=TAILLE*PIX;
+				om.w=PIX;
+				om.h=PIX;
 				SDL_RenderCopy(renderer,textures[9],NULL,&om);
 				SDL_RenderPresent(renderer);
 				do
@@ -72,13 +72,11 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 					
 				SDL_RenderClear(renderer);
 				if(k!=1)
-					k=menuButton(ecran,renderer,3,CreateButton(k+1,50,10,2,2,0,0,"suivant"),CreateButton(k-1,50,10,2,2,0,50,"precedent")
-													,CreateButton(Failed_case,50,10,2,2,0,100,"exit"));
+					k=menuButton(ecran,renderer,4,CreateButton(k+1,50,10,2,2,0,0,"suivant"),CreateButton(k-1,50,10,2,2,0,50,"precedent")
+						,CreateButton(k,50,10,2,2,0,100,"rejouer"),CreateButton(Failed_case,50,10,2,2,0,150,"exit"));
 				else
-					k=menuButton(ecran,renderer,2,CreateButton(k+1,50,10,2,2,0,0,"suivant"),
-													CreateButton(Failed_case,50,10,2,2,0,100,"exit"));
-			
-
+					k=menuButton(ecran,renderer,3,CreateButton(k+1,50,10,2,2,0,0,"suivant")
+						,CreateButton(k,50,10,2,2,0,100,"rejouer"),CreateButton(Failed_case,50,10,2,2,0,150,"exit"));
 				
 			}
 			
@@ -88,10 +86,9 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 			k=-1;
 		}
 		Pfree(actions);
-		Mfree(t,TAILLE);
-		t=Minitialiser(TAILLE,TAILLE);
+		Mfree(niveau->t,niveau->resolution.y);
 	}
-	
+	free(niveau);
 }
 
 void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
@@ -99,8 +96,21 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 	SDL_Event event;
 	FILE *file;
 	int s,s1,s2;
-	SDL_Rect om={0,0,PIX,PIX};
-	int **t={0};
+	int *height=getSettings("screenSetting","height"),*width=getSettings("screenSetting","width");
+	SDL_Rect om;
+	Level *niveau=malloc(sizeof(*niveau));
+	printf("resolution de votre niveau ");
+	printf("\nLa profondeur :");
+	scanf("%d",&niveau->resolution.x);
+	printf("\nLa largeur :");
+	scanf("%d",&niveau->resolution.y);
+
+	niveau->t=Minitialiser(niveau->resolution.x,niveau->resolution.y);
+	om.h=*height/niveau->resolution.x;
+	om.w=*width/niveau->resolution.y;
+	free(height);
+	free(width);
+	niveau->np=0;
 	if(SDL_SetRenderDrawColor(renderer,0,0,225,1)==-1)
 		{
 			for(int i=0;i!=10;i++)
@@ -108,7 +118,7 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 			SDL_stop("Renderer couleur non change",ecran,renderer,NULL);
 		}
 
-	init1(t,0,ecran,renderer,textures);
+	renderLevel(niveau,0,ecran,renderer,textures);
 	
 		
 	do
@@ -139,10 +149,11 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 				break;
 			}
 
-				s1=nohomo(s1);
-			s2=nohomo(s2);
-			om.x=s2*PIX;
-			om.y=s1*PIX;
+			s1=nohomo(s1,niveau->resolution.x);
+			s2=nohomo(s2,niveau->resolution.y);
+			om.x=s2*om.w;
+			om.y=s1*om.h;
+
 			SDL_SetRenderDrawColor(renderer,0,0,225,0);
 			SDL_RenderFillRect(renderer,&om);
 			SDL_RenderPresent(renderer);
@@ -155,36 +166,35 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 				switch(event.key.keysym.sym)
 				{
 					case SDLK_KP_0:
-						t[s1][s2]=0;
+						niveau->t[s1][s2]=0;
 					break;
 					
 					case SDLK_KP_1:
-						t[s1][s2]=1;
+						niveau->t[s1][s2]=1;
 					break;
 					
 					case SDLK_KP_2:
-						t[s1][s2]=2;
+					niveau->np++;
+						niveau->t[s1][s2]=2;
 					break;
 					
 					case SDLK_KP_3:
-						t[s1][s2]=3;
+						niveau->t[s1][s2]=3;
 					break;
 					
 					case SDLK_KP_4:
-						t[s1][s2]=4;
+						niveau->t[s1][s2]=4;
 					break;
 					
 					case SDLK_KP_5:
-						t[s1][s2]=5;
+						niveau->t[s1][s2]=5;
 					break;
 					
 					default:
 					break;
 				}
-				if(TEST)
-				verification(t);
-		
-				init1(t,0,ecran,renderer,textures);
+				
+				renderLevel(niveau,0,ecran,renderer,textures);
 				SDL_WaitEvent(&event);
 			}
 		}
@@ -196,7 +206,7 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 			SDL_stop("Renderer couleur non change",ecran,renderer,NULL);
 		}
 
-	translate(t);
+	translate(niveau);
 	
 }
 
@@ -223,12 +233,14 @@ int main (int argc, char *argv[])
 	/*------------------------------------*/
 	
 	/*------------------------------------*/
-
+	int *height=getSettings("screenSetting","height"),*width=getSettings("screenSetting","width");
 	ecran = SDL_CreateWindow("Mario Sokoban",
                           SDL_WINDOWPOS_CENTERED,
                           SDL_WINDOWPOS_CENTERED,
-                          TAILLE*PIX,TAILLE*PIX,
+                          *width,*height,
                            0);
+	free(height);
+	free(width);
 	if(ecran==NULL)
 		SDL_stop("ecran non aloue",NULL,NULL,NULL);
 	

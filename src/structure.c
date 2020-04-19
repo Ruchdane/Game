@@ -2,8 +2,6 @@
 #include "stdlib.h"
 
 #include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
 
 #include "structure.h"
 
@@ -14,7 +12,7 @@ Button *CreateButton(int value,int  padinx,int  padiny,int marginx,int marginy,i
 	
 	if(button==NULL)
 		{
-			printf("zqskfjbgdxk,sdl");
+			//("Button non alloue");
 			return NULL;
 		}
 	button->value=value;
@@ -40,13 +38,13 @@ void Pafficher(Pile*pile)
 	actuel=pile->premier;
 	while(actuel!=NULL)
 	{
-		printf(" _____________\n");
+		//(" _____________\n");
 		
-		printf("|     %s      |\n",c[actuel->nombre-1073741903]);
-		printf(" _____________\n");
+		//("|     %s      |\n",c[actuel->nombre-1073741903]);
+		//(" _____________\n");
 		actuel=actuel->suivant;
 	}
-	printf("\n et voici l inverse");
+	//("\n et voici l inverse");
 	
 	
 }
@@ -60,6 +58,82 @@ Pile* Pinverse(Pile* pile)
 	
 }
 
+int Linitialiser (Level *niveau,int j)
+{
+	char c;
+	int s=0,s1,s2,s3,*nivo=calloc(niveau->resolution.x,sizeof(int));
+	FILE *niveaux=NULL;
+	niveau->id=j;
+	/*Bon les commentaire c'est pas mon fort
+	donc je charge les nombre ecrit sur TAILLE bit 
+	je les charges dans TAILLE tableau chaque nombre
+	representes TAILLE cases sur la s1-iéme ligne
+	le remplisage bon 
+	0=vide;
+	1=mur;
+	2=perle verte;
+	3=boite;
+	4=2+3;
+	5=mario
+	*/
+	
+	if(j>0)/*j represente le niveau*/
+	{
+		niveaux=fopen("niveaux/niveau","r");
+
+		for(j--;j;j--)
+		{
+			c=fgetc(niveaux);
+			while(c!='\n' && feof(niveaux)==0)
+				c=fgetc(niveaux);
+		}/*positioner le curseur au niveau de la line j*/
+	}
+	
+	else
+	{
+		niveaux=fopen("niveaux/perso","r");
+	}
+	
+	fscanf(niveaux,"(%d,%d),",&niveau->resolution.x,&niveau->resolution.y);
+	niveau->t=Minitialiser(niveau->resolution.x,niveau->resolution.y);
+	fscanf(niveaux,"%d,",&niveau->np);/*Le nombre de perle qu'il y a*/
+
+	for(s1=0;s1!=niveau->resolution.x;s1++)
+		fscanf(niveaux,"%d,",&nivo[s1]);
+	
+	 
+	for(int i=0;i!=niveau->np;i++)
+	{
+		fscanf(niveaux,"(%d,%d),",&s1,&s2);/*les positions des perles vertes*/
+		niveau->t[s1][s2]=2;
+	}
+
+	for(int i=0;i!=niveau->np;i++)
+	{
+		fscanf(niveaux,"(%d,%d),",&s1,&s2);/*les positions des boites*/
+		if(niveau->t[s1][s2]==2)
+		{
+			niveau->t[s1][s2]=4;
+			niveau->np--;/*pour n'avoir que les perles visibles*/
+			i--;
+		}
+		else
+			niveau->t[s1][s2]=3;
+	}
+
+
+	fscanf(niveaux,"(%d,%d),",&s1,&s2);
+		niveau->t[s1][s2]=5;
+
+	for(s1=0;s1!=niveau->resolution.x;s1++)                            
+		for(s=1<<niveau->resolution.y-1,s2=0;s2!=niveau->resolution.y;s/=2,s2++)
+			if(s&nivo[s1])
+				niveau->t[s1][s2]=1;//je de dechifre les valeur ecrites sur talle bit
+	
+		  fclose(niveaux);
+	  return 1;
+
+}
 Pile* Pinitialiser()
 {
 	Pile *pile = malloc(sizeof(*pile));
@@ -124,7 +198,7 @@ int **Minitialiser(int size,int seze)
     matrice=calloc(size,sizeof(int*));
     if(matrice==NULL)
     {
-        printf("matrice non alloue");
+        //("matrice non alloue");
         exit(EXIT_FAILURE);
     }
 
@@ -133,7 +207,7 @@ int **Minitialiser(int size,int seze)
         matrice[i]=calloc(seze,sizeof(int));
         if(matrice[i]==NULL)
         {
-            printf("matrice non alloue");
+            //("matrice non alloue");
             exit(EXIT_FAILURE);
         }
     }
@@ -143,7 +217,49 @@ int **Minitialiser(int size,int seze)
 void Mfree(int **matrice,int seze)
 {
 	int i;
-	for(i=0;i!=seze;i++)
-		free(matrice[i]);
-	free(matrice);
+	if(matrice!=NULL)
+		{
+			for(i=0;i!=seze;i++)
+				free(matrice[i]);
+			free(matrice);
+		}
+}
+
+void Lwrite(Level *niveau)
+{
+	FILE *file;
+	if((file = fopen("niveaux\\level.bin","ab"))==NULL)
+	{
+		//("Eror opening file");
+		exit(EXIT_FAILURE);
+	}
+	fwrite(&niveau->id,sizeof(int),1,file);
+	fwrite(&niveau->np,sizeof(int),1,file);
+	fwrite(&niveau->resolution,sizeof(Descartes),1,file);
+	for(int i=0;i!=niveau->resolution.y;i++)
+		fwrite(niveau->t[i],sizeof(int),niveau->resolution.x,file);
+	fclose(file);
+}
+
+void Lread(Level *niveau,int j)
+{
+	FILE *file;
+	if((file = fopen("niveaux\\level.bin","rb"))==NULL)
+	{
+		//("Eror opening file");
+		exit(EXIT_FAILURE);
+	}
+	niveau->t=NULL;
+	do
+	{
+		fread(&niveau->id,sizeof(int),1,file);
+		fread(&niveau->np,sizeof(int),1,file);
+		fread(&niveau->resolution,sizeof(Descartes),1,file);
+		Mfree(niveau->t,niveau->resolution.x);
+		niveau->t=Minitialiser(niveau->resolution.y,niveau->resolution.x);
+		for(int i=0;i!=niveau->resolution.y;i++)
+			fwrite(niveau->t[i],sizeof(int),niveau->resolution.x,file);
+	}while (niveau->id!=j);
+	
+	fclose(file);
 }
