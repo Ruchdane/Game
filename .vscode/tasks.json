@@ -1,0 +1,25 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build c with SDL SDL_ttf et SDL_image",
+			"type": "shell",
+			"command": "gcc -g src\\*.c -o bin\\mario -I include -I include\\SDL -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "Run",
+			"type": "shell",
+			"command": ".\\bin\\mario",
+			"group": "test"
+		}
+	]
+}
