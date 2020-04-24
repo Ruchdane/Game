@@ -97,8 +97,10 @@ int menuButton(SDL_Window* window,SDL_Renderer* renderer,int bn,Button *b1, ...)
 		int height=20,state=0,pstate=0,i=0,j,k=0;
 		SDL_Event event;
 		TTF_Font *writer;
-		writer=TTF_OpenFont("Font/Champagne & Limousines Bold.ttf",height);
+		writer=TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf",height);
 		b=malloc(bn*sizeof(*b));
+		if(writer==NULL)
+			printf("Font could not be loaded");
 		if(b==NULL)
 			exit(EXIT_FAILURE);
 		va_start(bp,b1);

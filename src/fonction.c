@@ -46,7 +46,7 @@ void translate (Level *nivo)
 	int brak=1,s1,s2;
 	FILE* niveau;
 	int **t=nivo->t;
-	if((niveau=fopen("niveaux/perso","w+"))==NULL)
+	if((niveau=fopen("../niveaux/perso","w+"))==NULL)
 		printf("Eror opening file");
 	fprintf(niveau,"(%d,%d),",nivo->resolution.x,nivo->resolution.y);
 	for(s1=0;s1!=nivo->resolution.x;s1++)                            

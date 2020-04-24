@@ -16,6 +16,18 @@
 			]
 		},
 		{
+			"label": "Build c with SDL SDL_ttf et SDL_image without windows",
+			"type": "shell",
+			"command": "gcc -g src\\*.c -o bin\\mario -I include -I include\\SDL -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -mwindows",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
 			"label": "Run",
 			"type": "shell",
 			"command": ".\\bin\\mario",

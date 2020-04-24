@@ -244,7 +244,7 @@ int main (int argc, char *argv[])
 	if(ecran==NULL)
 		SDL_stop("ecran non aloue",NULL,NULL,NULL);
 	
-	surface=IMG_Load("img/mur.png");
+	surface=IMG_Load("../img/mur.png");
 	if(surface==NULL)
 		SDL_stop("L'image n'as pas pu etre charger",ecran,NULL,NULL);
 	
@@ -258,16 +258,16 @@ int main (int argc, char *argv[])
 		SDL_stop("desinateur non  aloue",ecran,NULL,NULL);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-	textures[0]=TextureFromImage("img/vide.png",ecran,renderer);
-	textures[1]=TextureFromImage("img/mur.png",ecran,renderer);
-	textures[2]=TextureFromImage("img/objectif.png",ecran,renderer);
-	textures[3]=TextureFromImage("img/0.png",ecran,renderer);
-	textures[4]=TextureFromImage("img/1.png",ecran,renderer);
-	textures[5]=TextureFromImage("img/0.gif",ecran,renderer);
-	textures[6]=TextureFromImage("img/1.gif",ecran,renderer);
-	textures[7]=TextureFromImage("img/2.gif",ecran,renderer);
-	textures[8]=TextureFromImage("img/3.gif",ecran,renderer);
-	textures[9]=TextureFromImage("img/images.png",ecran,renderer);
+	textures[0]=TextureFromImage("../img/vide.png",ecran,renderer);
+	textures[1]=TextureFromImage("../img/mur.png",ecran,renderer);
+	textures[2]=TextureFromImage("../img/objectif.png",ecran,renderer);
+	textures[3]=TextureFromImage("../img/0.png",ecran,renderer);
+	textures[4]=TextureFromImage("../img/1.png",ecran,renderer);
+	textures[5]=TextureFromImage("../img/0.gif",ecran,renderer);
+	textures[6]=TextureFromImage("../img/1.gif",ecran,renderer);
+	textures[7]=TextureFromImage("../img/2.gif",ecran,renderer);
+	textures[8]=TextureFromImage("../img/3.gif",ecran,renderer);
+	textures[9]=TextureFromImage("../img/images.png",ecran,renderer);
 	
 	while(j)
 	{

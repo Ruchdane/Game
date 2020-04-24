@@ -40,7 +40,7 @@ void* getSettings(char *section,char *parametre)
 		return NULL;
 	}
 	
-	if((file=fopen("bin\\settings.ini","r"))==NULL)
+	if((file=fopen("settings.ini","r"))==NULL)
 	{
 		printf("Le fichier ini n'a pas pu etre ouvert");
 		return NULL;
