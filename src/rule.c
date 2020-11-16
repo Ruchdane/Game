@@ -1,13 +1,4 @@
-#define TEST 0
-#include "stdio.h"
-#include "SDL.h"
-#include"SDL_image.h"
-#include "SDL_ttf.h"
-#include "structure.h"
 #include "rule.h"
-#include "fonction.h"
-
-#include "Gui.h"
 
 void verification(Level *niveau)/*Inprimer le tableau des des donner-*/
 

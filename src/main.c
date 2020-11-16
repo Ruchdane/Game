@@ -1,21 +1,13 @@
-#include "stdio.h"
-#include "stdlib.h"
-#define PIX 34
-#define TEST 0
-#include "SDL.h"
-#define Failed_case -100
-#include"SDL_image.h"
-#include "SDL_ttf.h"
-#include "fonction.h"
-#include "structure.h"
-#include "rule.h"
-#include "ini.h"
-#include "Gui.h"
+#include "main.h"
+SDL_Window *ecran;
+Vector2 Screnres;
 
+SDL_Window *GetWindow() { return ecran; }
 
-void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,int k)
+void jouer(SDL_Texture **textures ,int k)
 {
 	SDL_Rect om={0,0,34,34},oom={0,0,34,34};
+	SDL_Renderer *renderer = SDL_GetRenderer(GetWindow());
 	SDL_Event event;
 	Pile *actions;
 	int s,j=0;
@@ -27,7 +19,7 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 		if(Linitialiser(niveau,k))
 		{
 		actions=Pinitialiser();
-		renderLevel(niveau,3,ecran,renderer,textures);
+		renderLevel(niveau,3,textures);
 		SDL_RenderPresent(renderer);
 		do
 			{
@@ -49,7 +41,7 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 				else
 					continue;
 
-					renderLevel(niveau,j,ecran,renderer,textures);
+					renderLevel(niveau,j,textures);
 					SDL_RenderPresent(renderer);
 					SDL_RenderClear(renderer);
 
@@ -72,10 +64,10 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 					
 				SDL_RenderClear(renderer);
 				if(k!=1)
-					k=menuButton(ecran,renderer,4,CreateButton(k+1,50,10,2,2,0,0,"suivant"),CreateButton(k-1,50,10,2,2,0,50,"precedent")
+					k=menuButton(4,CreateButton(k+1,50,10,2,2,0,0,"suivant"),CreateButton(k-1,50,10,2,2,0,50,"precedent")
 						,CreateButton(k,50,10,2,2,0,100,"rejouer"),CreateButton(Failed_case,50,10,2,2,0,150,"exit"));
 				else
-					k=menuButton(ecran,renderer,3,CreateButton(k+1,50,10,2,2,0,0,"suivant")
+					k=menuButton(3,CreateButton(k+1,50,10,2,2,0,0,"suivant")
 						,CreateButton(k,50,10,2,2,0,100,"rejouer"),CreateButton(Failed_case,50,10,2,2,0,150,"exit"));
 				
 			}
@@ -91,9 +83,10 @@ void jouer( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures ,in
 	free(niveau);
 }
 
-void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
+void niveau(SDL_Texture **textures)
 {
 	SDL_Event event;
+	SDL_Renderer *renderer = SDL_GetRenderer(GetWindow());
 	FILE *file;
 	int s,s1,s2;
 	int *height=getSettings("screenSetting","height"),*width=getSettings("screenSetting","width");
@@ -115,10 +108,10 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 		{
 			for(int i=0;i!=10;i++)
 				SDL_DestroyTexture(textures[i]);
-			SDL_stop("Renderer couleur non change",ecran,renderer,NULL);
+			SDL_stop("Renderer couleur non change",NULL);
 		}
 
-	renderLevel(niveau,0,ecran,renderer,textures);
+	renderLevel(niveau,0,textures);
 	
 		
 	do
@@ -194,7 +187,7 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 					break;
 				}
 				
-				renderLevel(niveau,0,ecran,renderer,textures);
+				renderLevel(niveau,0,textures);
 				SDL_WaitEvent(&event);
 			}
 		}
@@ -203,25 +196,21 @@ void niveau( SDL_Window *ecran,SDL_Renderer* renderer ,SDL_Texture **textures)
 		{
 			for(int i=0;i!=10;i++)
 				SDL_DestroyTexture(textures[i]);
-			SDL_stop("Renderer couleur non change",ecran,renderer,NULL);
+			SDL_stop("Renderer couleur non change",NULL);
 		}
 
 	translate(niveau);
 	
 }
 
-
-
 int main (int argc, char *argv[])
 {
 	/*------------------------------------*/
 	int j=1,s1,s2;
-	SDL_Window *ecran=NULL;
 	SDL_Surface *surface=NULL;
-	SDL_Renderer* renderer;
 	SDL_Event event;
 	SDL_Texture *textures[10];
-	
+	SDL_Renderer *renderer;
 	/*------------------------------------*/
 	
 	/*------------------------------------*/
@@ -242,11 +231,11 @@ int main (int argc, char *argv[])
 	free(height);
 	free(width);
 	if(ecran==NULL)
-		SDL_stop("ecran non aloue",NULL,NULL,NULL);
+		SDL_stop("ecran non aloue",NULL);
 	
 	surface=IMG_Load("../img/mur.png");
 	if(surface==NULL)
-		SDL_stop("L'image n'as pas pu etre charger",ecran,NULL,NULL);
+		SDL_stop("L'image n'as pas pu etre charger",NULL);
 	
 
 	SDL_SetWindowIcon(ecran,surface);
@@ -255,34 +244,34 @@ int main (int argc, char *argv[])
 	renderer=SDL_CreateRenderer(ecran,-1,0);
 	
 	if(renderer==NULL)
-		SDL_stop("desinateur non  aloue",ecran,NULL,NULL);
+		SDL_stop("desinateur non  aloue",NULL);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-	textures[0]=TextureFromImage("../img/vide.png",ecran,renderer);
-	textures[1]=TextureFromImage("../img/mur.png",ecran,renderer);
-	textures[2]=TextureFromImage("../img/objectif.png",ecran,renderer);
-	textures[3]=TextureFromImage("../img/0.png",ecran,renderer);
-	textures[4]=TextureFromImage("../img/1.png",ecran,renderer);
-	textures[5]=TextureFromImage("../img/0.gif",ecran,renderer);
-	textures[6]=TextureFromImage("../img/1.gif",ecran,renderer);
-	textures[7]=TextureFromImage("../img/2.gif",ecran,renderer);
-	textures[8]=TextureFromImage("../img/3.gif",ecran,renderer);
-	textures[9]=TextureFromImage("../img/images.png",ecran,renderer);
+	textures[0]=TextureFromImage("../img/vide.png");
+	textures[1]=TextureFromImage("../img/mur.png");
+	textures[2]=TextureFromImage("../img/objectif.png");
+	textures[3]=TextureFromImage("../img/0.png");
+	textures[4]=TextureFromImage("../img/1.png");
+	textures[5]=TextureFromImage("../img/0.gif");
+	textures[6]=TextureFromImage("../img/1.gif");
+	textures[7]=TextureFromImage("../img/2.gif");
+	textures[8]=TextureFromImage("../img/3.gif");
+	textures[9]=TextureFromImage("../img/images.png");
 	
 	while(j)
 	{
-		switch(menuButton(ecran,renderer,3,
+		switch(menuButton(3,
 			CreateButton(1,50,10,2,2,0,0,"start"),
 			CreateButton(2,50,10,2,2,0,50,"editeur de niveau"),CreateButton(3,50,10,2,2,0,100,"exit")))
 		{
 			case 1:
-			jouer(ecran,renderer,textures,1);
+			jouer(textures,1);
 			break;
 	
 			case 2 :
 			{
-				niveau(ecran,renderer,textures);
-				jouer(ecran,renderer,textures,-1);
+				niveau(textures);
+				jouer(textures,-1);
 			}
 			break;
 	

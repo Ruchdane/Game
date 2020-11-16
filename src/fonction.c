@@ -1,34 +1,30 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
 #include "fonction.h"
-#include "structure.h"
-#include "rule.h"
-/*<>*/
-SDL_Texture* TextureFromImage(char *title,SDL_Window* window,SDL_Renderer *renderer)
+SDL_Texture* TextureFromImage(char *title)
 {
-		SDL_Surface* surface= IMG_Load(title);
-		SDL_Texture* texture = NULL;
-		SDL_Rect rectangle={0,0,PIX,PIX};
-		if(surface==NULL)
-			SDL_stop("surface non aloue",window,renderer,NULL);
+	SDL_Window *ecran = GetWindow();
+	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
+	SDL_Surface *surface = IMG_Load(title);
+	SDL_Texture *texture = NULL;
+	SDL_Rect rectangle = {0, 0, PIX, PIX};
+	if (surface == NULL)
+		SDL_stop("surface non aloue", NULL);
 
-		texture=SDL_CreateTextureFromSurface(renderer,surface);
+	texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-			SDL_FreeSurface(surface);
-		if(texture==NULL)
-			SDL_stop("surface non convertie en texture",window,renderer,NULL);
-		
-		SDL_QueryTexture(texture,NULL,NULL,&rectangle.w,&rectangle.h);
-		return texture;
+	SDL_FreeSurface(surface);
+	if (texture == NULL)
+		SDL_stop("surface non convertie en texture",  NULL);
+
+	SDL_QueryTexture(texture, NULL, NULL, &rectangle.w, &rectangle.h);
+	return texture;
 }
-void  SDL_stop(const char *message,SDL_Window* window,SDL_Renderer *renderer,SDL_Texture *texture)
+void  SDL_stop(const char *message,SDL_Texture *texture)
 {
+	SDL_Window *ecran = GetWindow();
+	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
 	printf("EROR :%s --%s\n",message,SDL_GetError());
-	if(window!=NULL)
-		SDL_DestroyWindow(window);
+	if(ecran!=NULL)
+		SDL_DestroyWindow(ecran);
 	if(renderer!=NULL)
 		SDL_DestroyRenderer(renderer);
 	if(texture!=NULL)

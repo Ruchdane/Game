@@ -1,22 +1,10 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "stdarg.h"
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-#include "structure.h"
 #include "Gui.h"
-#include "rule.h"
-#include "ini.h"
 
-#define FPS 1000/20
-#define PIX 34
-Descartes Screnres;
-
-
-int renderButton(Button button,SDL_Window* window,SDL_Renderer* renderer,TTF_Font *writer,int state)
+int renderButton(Button button,TTF_Font *writer,int state)
 {
-		Descartes position;
+		Vector2 position;
+		SDL_Window *ecran=GetWindow();
+		SDL_Renderer *renderer = SDL_GetRenderer(ecran);
 		int mstate=SDL_GetMouseState(&position.x,&position.y);
 		SDL_Surface* surface=NULL;
 		SDL_Texture* texture=NULL;
@@ -42,7 +30,7 @@ int renderButton(Button button,SDL_Window* window,SDL_Renderer* renderer,TTF_Fon
 			
 	
 			
-			Descartes tmp;
+			Vector2 tmp;
 			if(state==2)
 			{
 				tmp=button.margin;
@@ -90,68 +78,70 @@ int renderButton(Button button,SDL_Window* window,SDL_Renderer* renderer,TTF_Fon
 			return 0;
 }
 
-int menuButton(SDL_Window* window,SDL_Renderer* renderer,int bn,Button *b1, ...)
+int menuButton(int bn,Button *b1, ...)
 {
-		va_list bp;/*buton pointer*/
-		Button **b;
-		int height=20,state=0,pstate=0,i=0,j,k=0;
-		SDL_Event event;
-		TTF_Font *writer;
-		writer=TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf",height);
-		b=malloc(bn*sizeof(*b));
-		if(writer==NULL)
-			printf("Font could not be loaded");
-		if(b==NULL)
-			exit(EXIT_FAILURE);
-		va_start(bp,b1);
-		
-		b[0]=b1;
+	SDL_Window *ecran = GetWindow();
+	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
+	va_list bp; /*buton pointer*/
+	Button **b;
+	int height = 20, state = 0, pstate = 0, i = 0, j, k = 0;
+	SDL_Event event;
+	TTF_Font *writer;
+	writer = TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf", height);
+	b = malloc(bn * sizeof(*b));
+	if (writer == NULL)
+		printf("Font could not be loaded");
+	if (b == NULL)
+		exit(EXIT_FAILURE);
+	va_start(bp, b1);
 
-		for(j=1;j!=bn;b[j]=va_arg(bp,Button*),j++);
-		
-		va_end(bp);
-		
-		do
+	b[0] = b1;
+
+	for (j = 1; j != bn; b[j] = va_arg(bp, Button *), j++)
+		;
+
+	va_end(bp);
+
+	do
+	{
+		SDL_PollEvent(&event);
+		state = 0;
+		if (event.type == SDL_KEYDOWN)
+			switch (event.key.keysym.sym)
+			{
+			case SDLK_UP:
+				i--;
+				break;
+
+			case SDLK_DOWN:
+				i++;
+				break;
+
+			case SDLK_RETURN:
+				state = 1;
+				break;
+			}
+		for (j = 0; j != bn && k == 0; j++)
 		{
-			SDL_PollEvent(&event);
-			state=0;
-			if(event.type==SDL_KEYDOWN)
-				switch(event.key.keysym.sym)
-				{
-					case SDLK_UP:
-					i--;
-					break;
-					
-					case SDLK_DOWN:
-					i++;
-					break;
-
-					case SDLK_RETURN:
-					state=1;
-					break ;
-				}
-			for(j=0;j!=bn && k==0;j++)
-				{
-					if(i%bn==j)
-						{
-							if(state==1)
-								k=renderButton(*b[j],window,renderer,writer,2);
-							else
-								k=renderButton(*b[j],window,renderer,writer,1);
-						}
-					else
-						k=renderButton(*b[j],window,renderer,writer,0);
-					if(k==100)
-						{
-							i=j;
-							k=0;
-						}
-					
-				}
-			SDL_RenderPresent(renderer);
-			SDL_Delay(FPS);
-			SDL_SetRenderDrawColor(renderer,225,225,225,225);
-			SDL_RenderClear(renderer);
+			if (i % bn == j)
+			{
+				if (state == 1)
+					k = renderButton(*b[j],  writer, 2);
+				else
+					k = renderButton(*b[j], writer, 1);
+			}
+			else
+				k = renderButton(*b[j], writer, 0);
+			if (k == 100)
+			{
+				i = j;
+				k = 0;
+			}
+		}
+		SDL_RenderPresent(renderer);
+		SDL_Delay(FPS);
+		SDL_SetRenderDrawColor(renderer, 225, 225, 225, 225);
+		SDL_RenderClear(renderer);
 			
 		}while(event.type!=SDL_QUIT && k==0);
 		
@@ -162,10 +152,13 @@ int menuButton(SDL_Window* window,SDL_Renderer* renderer,int bn,Button *b1, ...)
 		return k;
 }
 
-void renderLevel (Level *niveau,int j,SDL_Window *ecran,SDL_Renderer* renderer,SDL_Texture **textures)
+void renderLevel (Level *niveau,int j,SDL_Texture **textures)
 
 {
 	static int isInitialised;
+	SDL_Window *ecran = GetWindow();
+	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
+	Vector2 Screnres;
 	int s1=0,s2=0,b=1,k;
 	SDL_Rect cadre={0,0,34,34};
 	if(!isInitialised)
@@ -218,5 +211,5 @@ void renderLevel (Level *niveau,int j,SDL_Window *ecran,SDL_Renderer* renderer,S
 			SDL_RenderCopy(renderer,textures[5+j],NULL,&cadre);
 		} 
 		
-	 }
+	}
 }

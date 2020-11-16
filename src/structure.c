@@ -1,33 +1,43 @@
-#include "stdio.h"
-#include "stdlib.h"
-
-#include "SDL.h"
-
 #include "structure.h"
 
-Button *CreateButton(int value,int  padinx,int  padiny,int marginx,int marginy,int cadrex,int cadrey,char *message)
+Button *CreateButton(int value, int padinx, int padiny, int marginx, int marginy, int cadrex, int cadrey, char *message)
 {
-	Button *button=NULL;
-	button=malloc(sizeof(Button));
-	
-	if(button==NULL)
-		{
-			//("Button non alloue");
-			return NULL;
-		}
-	button->value=value;
-	button->padin.x=padinx;
-	button->padin.y=padiny;
-	button->margin.x=marginx;
-	button->margin.y=marginy;
-	button->cadre.x=cadrex;
-	button->cadre.y=cadrey;
-	button->cadre.w=0;
-	button->cadre.h=0;
-	button->cadre.x=cadrex;
-	button->message=message;
+	Button *button = malloc(sizeof(Button));
+
+	if (button == NULL)
+	{
+		printf("Button non alloue");
+		return NULL;
+	}
+	button->value = value;
+
+	button->padin.x = padinx;
+	button->padin.y = padiny;
+
+	button->margin.x = marginx;
+	button->margin.y = marginy;
+
+	button->cadre.x = cadrex;
+	button->cadre.y = cadrey;
+	button->cadre.w = 0;
+	button->cadre.h = 0;
+
+	button->message = message;
+
+	button->test = RGBToColor(50,0,225,225);
+	button->ombre = RGBToColor(0, 225, 50,225);
+	button->couleur=RGBToColor(225, 50,0,225);
 }
 
+SDL_Color RGBToColor(int r, int g, int b, int a)
+{
+	SDL_Color color;
+	color.r = r;
+	color.g = g;
+	color.b = b;
+	color.a = a;
+	return color;
+}
 
 void Pafficher(Pile*pile)
 {
@@ -37,16 +47,7 @@ void Pafficher(Pile*pile)
 		exit(EXIT_FAILURE);
 	actuel=pile->premier;
 	while(actuel!=NULL)
-	{
-		//(" _____________\n");
-		
-		//("|     %s      |\n",c[actuel->nombre-1073741903]);
-		//(" _____________\n");
 		actuel=actuel->suivant;
-	}
-	//("\n et voici l inverse");
-	
-	
 }
 Pile* Pinverse(Pile* pile)
 {
@@ -235,7 +236,7 @@ void Lwrite(Level *niveau)
 	}
 	fwrite(&niveau->id,sizeof(int),1,file);
 	fwrite(&niveau->np,sizeof(int),1,file);
-	fwrite(&niveau->resolution,sizeof(Descartes),1,file);
+	fwrite(&niveau->resolution,sizeof(Vector2),1,file);
 	for(int i=0;i!=niveau->resolution.y;i++)
 		fwrite(niveau->t[i],sizeof(int),niveau->resolution.x,file);
 	fclose(file);
@@ -254,7 +255,7 @@ void Lread(Level *niveau,int j)
 	{
 		fread(&niveau->id,sizeof(int),1,file);
 		fread(&niveau->np,sizeof(int),1,file);
-		fread(&niveau->resolution,sizeof(Descartes),1,file);
+		fread(&niveau->resolution,sizeof(Vector2),1,file);
 		Mfree(niveau->t,niveau->resolution.x);
 		niveau->t=Minitialiser(niveau->resolution.y,niveau->resolution.x);
 		for(int i=0;i!=niveau->resolution.y;i++)
