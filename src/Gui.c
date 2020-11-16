@@ -78,11 +78,10 @@ int renderButton(Button button,TTF_Font *writer,int state)
 			return 0;
 }
 
-int menuButton(int bn,Button *B)
+int menuButton(int bn,Button **B)
 {
 	SDL_Window *ecran = GetWindow();
 	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
-	Button *B;
 	int height = 20, state = 0, pstate = 0, i = 0, j, k = 0;
 	SDL_Event event;
 	TTF_Font *writer;
@@ -115,12 +114,12 @@ int menuButton(int bn,Button *B)
 			if (i % bn == j)
 			{
 				if (state == 1)
-					k = renderButton(B[j],  writer, 2);
+					k = renderButton(*B[j],  writer, 2);
 				else
-					k = renderButton(B[j], writer, 1);
+					k = renderButton(*B[j], writer, 1);
 			}
 			else
-				k = renderButton(B[j], writer, 0);
+				k = renderButton(*B[j], writer, 0);
 			if (k == 100)
 			{
 				i = j;
@@ -135,7 +134,9 @@ int menuButton(int bn,Button *B)
 		}while(event.type!=SDL_QUIT && k==0);
 		
 		TTF_CloseFont(writer);
-		SDL_SetRenderDrawColor(renderer,0,0,0,225);
+		for (i = 0; i < bn;i++)
+			free(B[i]);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 225);
 		return k;
 }
 

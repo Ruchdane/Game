@@ -12,8 +12,13 @@ void jouer(SDL_Texture **textures ,int k)
 	Pile *actions;
 	int s,j=0;
 	Level *niveau;
-	niveau=malloc(sizeof(*niveau));
-	
+	Button *Buttons[4] = {
+		CreateButton(k + 1, 50, 10, 2, 2, 0, 0, "suivant"),
+		CreateButton(Failed_case, 50, 10, 2, 2, 0, 150, "exit"),
+		CreateButton(k, 50, 10, 2, 2, 0, 100, "rejouer"),
+		CreateButton(k - 1, 50, 10, 2, 2, 0, 50, "precedent")};
+	niveau = malloc(sizeof(*niveau));
+
 	for(;k!=Failed_case;)
 	{
 		if(Linitialiser(niveau,k))
@@ -64,11 +69,9 @@ void jouer(SDL_Texture **textures ,int k)
 					
 				SDL_RenderClear(renderer);
 				if(k!=1)
-					k=menuButton(4,CreateButton(k+1,50,10,2,2,0,0,"suivant"),CreateButton(k-1,50,10,2,2,0,50,"precedent")
-						,CreateButton(k,50,10,2,2,0,100,"rejouer"),CreateButton(Failed_case,50,10,2,2,0,150,"exit"));
+					k=menuButton(4,Buttons);
 				else
-					k=menuButton(3,CreateButton(k+1,50,10,2,2,0,0,"suivant")
-						,CreateButton(k,50,10,2,2,0,100,"rejouer"),CreateButton(Failed_case,50,10,2,2,0,150,"exit"));
+					k=menuButton(3,Buttons);
 				
 			}
 			
@@ -211,8 +214,12 @@ int main (int argc, char *argv[])
 	SDL_Event event;
 	SDL_Texture *textures[10];
 	SDL_Renderer *renderer;
+	Button *MainMenu[3] = {
+		CreateButton(1, 50, 10, 2, 2, 0, 0, "start"),
+		CreateButton(2, 50, 10, 2, 2, 0, 50, "editeur de niveau"),
+		CreateButton(3, 50, 10, 2, 2, 0, 100, "exit")};
 	/*------------------------------------*/
-	
+
 	/*------------------------------------*/
 
 	SDL_Init(SDL_INIT_VIDEO);
@@ -223,11 +230,12 @@ int main (int argc, char *argv[])
 	
 	/*------------------------------------*/
 	int *height=getSettings("screenSetting","height"),*width=getSettings("screenSetting","width");
-	ecran = SDL_CreateWindow("Mario Sokoban",
-                          SDL_WINDOWPOS_CENTERED,
-                          SDL_WINDOWPOS_CENTERED,
-                          *width,*height,
-                           0);
+	ecran = SDL_CreateWindow(
+		"Mario Sokoban",
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
+		*width, *height,
+		0);
 	free(height);
 	free(width);
 	if(ecran==NULL)
@@ -260,9 +268,7 @@ int main (int argc, char *argv[])
 	
 	while(j)
 	{
-		switch(menuButton(3,
-			CreateButton(1,50,10,2,2,0,0,"start"),
-			CreateButton(2,50,10,2,2,0,50,"editeur de niveau"),CreateButton(3,50,10,2,2,0,100,"exit")))
+		switch(menuButton(3,MainMenu))
 		{
 			case 1:
 			jouer(textures,1);
