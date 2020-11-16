@@ -13,6 +13,6 @@
 
 void renderLevel(Level *niveau, int j,SDL_Texture **textures);
 int renderButton(Button button, TTF_Font *writer, int state);
-int menuButton(int bn, Button *b1, ...);
+int menuButton(int bn, Button *B);
 
 #endif

@@ -78,30 +78,19 @@ int renderButton(Button button,TTF_Font *writer,int state)
 			return 0;
 }
 
-int menuButton(int bn,Button *b1, ...)
+int menuButton(int bn,Button *B)
 {
 	SDL_Window *ecran = GetWindow();
 	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
-	va_list bp; /*buton pointer*/
-	Button **b;
+	Button *B;
 	int height = 20, state = 0, pstate = 0, i = 0, j, k = 0;
 	SDL_Event event;
 	TTF_Font *writer;
+	if (B == NULL)
+		return 0;
 	writer = TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf", height);
-	b = malloc(bn * sizeof(*b));
 	if (writer == NULL)
 		printf("Font could not be loaded");
-	if (b == NULL)
-		exit(EXIT_FAILURE);
-	va_start(bp, b1);
-
-	b[0] = b1;
-
-	for (j = 1; j != bn; b[j] = va_arg(bp, Button *), j++)
-		;
-
-	va_end(bp);
-
 	do
 	{
 		SDL_PollEvent(&event);
@@ -126,12 +115,12 @@ int menuButton(int bn,Button *b1, ...)
 			if (i % bn == j)
 			{
 				if (state == 1)
-					k = renderButton(*b[j],  writer, 2);
+					k = renderButton(B[j],  writer, 2);
 				else
-					k = renderButton(*b[j], writer, 1);
+					k = renderButton(B[j], writer, 1);
 			}
 			else
-				k = renderButton(*b[j], writer, 0);
+				k = renderButton(B[j], writer, 0);
 			if (k == 100)
 			{
 				i = j;
@@ -146,8 +135,6 @@ int menuButton(int bn,Button *b1, ...)
 		}while(event.type!=SDL_QUIT && k==0);
 		
 		TTF_CloseFont(writer);
-		for(j=0;j!=bn;free(b[j]),j++);
-		free(b);
 		SDL_SetRenderDrawColor(renderer,0,0,0,225);
 		return k;
 }
