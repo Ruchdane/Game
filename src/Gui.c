@@ -2,80 +2,81 @@
 
 int renderButton(Button button,TTF_Font *writer,int state)
 {
-		Vector2 position;
-		SDL_Window *ecran=GetWindow();
-		SDL_Renderer *renderer = SDL_GetRenderer(ecran);
-		int mstate=SDL_GetMouseState(&position.x,&position.y);
-		SDL_Surface* surface=NULL;
-		SDL_Texture* texture=NULL;
-	
-		SDL_Color test={225,192,0},ombre={164,181,198};
-		int box[3][3]={{0,0,225},{89,89,225},{0,0,95}};
-		/* state 0 idle   */
-		/*       1 on_select */
-		/*       2 on_clik   */
-		surface=TTF_RenderText_Blended(writer,button.message, test);
-		texture=SDL_CreateTextureFromSurface(renderer,surface);
-		SDL_FreeSurface(surface);
-		SDL_QueryTexture(texture,NULL,NULL,&button.cadre.w,&button.cadre.h);
-		
-			if(button.cadre.x < position.x && position.x < button.cadre.x + button.cadre.w+2*(button.padin.x+button.margin.x) &&
-				button.cadre.y < position.y  && position.y< button.cadre.y + button.cadre.h+2*(button.padin.y+button.margin.y))
-					{
-						if(mstate & SDL_BUTTON(SDL_BUTTON_LEFT))
-							state=2;
-						else
-							state=1;
-					}
-			
-	
-			
-			Vector2 tmp;
-			if(state==2)
-			{
-				tmp=button.margin;
-				button.margin.x=0;
-				button.margin.y=0;
-				button.padin.x +=tmp.x;
-				button.padin.y +=tmp.y;
-			}
-			//on veut desner 3 recctangle
-			//l'ombre
-			button.cadre.w+=2*(button.padin.x+button.margin.x);
-			button.cadre.h+=2*(button.padin.y+button.margin.y);
-			
-			SDL_SetRenderDrawColor(renderer,164,181,198,225);
-			SDL_RenderFillRect(renderer,&button.cadre);
-			
-			/*//le cadre
-			button.cadre.x+=button.margin.x;
-			button.cadre.y+=button.margin.y;*/
-			button.cadre.w-=2*(button.margin.x);
-			button.cadre.h-=2*(button.margin.y);
-			
-			SDL_SetRenderDrawColor(renderer,box[state][0],box[state][1],box[state][2],225);
-			SDL_RenderFillRect(renderer,&button.cadre);
+	Vector2 position;
+	SDL_Window *ecran = GetWindow();
+	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
+	int mstate = SDL_GetMouseState(&position.x, &position.y);
+	SDL_Surface *surface = NULL;
+	SDL_Texture *texture = NULL;
+	Vector2 tmp;
 
-			//le titre
-			button.cadre.x+=button.padin.x;
-			button.cadre.y+=button.padin.y;
-			button.cadre.w-=2*button.padin.x;
-			button.cadre.h-=2*button.padin.y;
-			SDL_RenderCopy(renderer,texture,NULL,&button.cadre);
-			
-			
-			
-			button.cadre.x-=button.padin.x;
-			button.cadre.y-=button.padin.y;
-			
-			
-		SDL_DestroyTexture(texture);
-		if(state==2)
-			return button.value;
-		if(state==1)
-			return 100;
-		else 
-			return 0;
+	/* state 0 idle      */
+	/*       1 on_select */
+	/*       2 on_clik   */
+
+	surface = TTF_RenderText_Blended(writer, button.message, button.test);
+	texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_QueryTexture(texture, NULL, NULL, &button.cadre.w, &button.cadre.h);
+
+	if (PositionInButtons(button, position))
+	{
+		if (mstate & SDL_BUTTON(SDL_BUTTON_LEFT))
+			state = 2;
+		else
+			state = 1;
+	}
+
+	if (state == 2)
+	{
+		tmp = button.margin;
+		button.margin.x = 0;
+		button.margin.y = 0;
+		button.padin.x += tmp.x;
+		button.padin.y += tmp.y;
+		button.couleur = DimColor(button.couleur, 3);
+	}
+	if (state == 1)
+	{
+		button.couleur = LightenColor(button.couleur, 2);
+	}
+	//on veut desner 3 recctangle
+	//l'ombre
+	button.cadre.x -= button.margin.x;
+	button.cadre.y -= button.margin.y;
+	button.cadre.w += 2 * (button.padin.x + button.margin.x);
+	button.cadre.h += 2 * (button.padin.y + button.margin.y);
+
+	SDL_SetRenderDrawColorWithColor(renderer, button.ombre);
+	SDL_RenderFillRect(renderer, &button.cadre);
+
+	//le cadre
+	button.cadre.x += button.margin.x;
+	button.cadre.y += button.margin.y;
+	button.cadre.w -= 2 * (button.margin.x);
+	button.cadre.h -= 2 * (button.margin.y);
+
+	SDL_SetRenderDrawColorWithColor(renderer, button.couleur);
+	SDL_RenderFillRect(renderer, &button.cadre);
+
+	//le titre
+	button.cadre.x += button.padin.x;
+	button.cadre.y += button.padin.y;
+	button.cadre.w -= 2 * button.padin.x;
+	button.cadre.h -= 2 * button.padin.y;
+	//la couleur est appliquer en haut
+	SDL_RenderCopy(renderer, texture, NULL, &button.cadre);
+
+	button.cadre.x -= button.padin.x;
+	button.cadre.y -= button.padin.y;
+
+	SDL_DestroyTexture(texture);
+	if (state == 2)
+		return button.value;
+	if (state == 1)
+		return 100;
+	else
+		return 0;
 }
 
 int menuButton(int bn,Button **B)

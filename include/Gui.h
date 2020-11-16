@@ -10,6 +10,7 @@
 #include "SDL_ttf.h"
 #include "structure.h"
 #include "main.h"
+#include "utilitaires.h"
 
 void renderLevel(Level *niveau, int j,SDL_Texture **textures);
 int renderButton(Button button, TTF_Font *writer, int state);
