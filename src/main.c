@@ -12,11 +12,12 @@ void jouer(SDL_Texture **textures ,int k)
 	Pile *actions;
 	int s,j=0;
 	Level *niveau;
-	Button *Buttons[4] = {
-		CreateButton(k + 1, 50, 10, 2, 2, 0, 0, "suivant"),
-		CreateButton(Failed_case, 50, 10, 2, 2, 0, 150, "exit"),
-		CreateButton(k, 50, 10, 2, 2, 0, 100, "rejouer"),
-		CreateButton(k - 1, 50, 10, 2, 2, 0, 50, "precedent")};
+	Button *Buttons[4];
+
+	Buttons[0] = CreateButton(k + 1, 50, 10, 2, 2, 0, 0, "suivant");
+	Buttons[1] = CreateButton(Failed_case, 50, 10, 2, 2, 0, 150, "exit");
+	Buttons[2] = CreateButton(k, 50, 10, 2, 2, 0, 100, "rejouer");
+	Buttons[3] = CreateButton(k - 1, 50, 10, 2, 2, 0, 50, "precedent");
 	niveau = malloc(sizeof(*niveau));
 
 	for(;k!=Failed_case;)
@@ -209,15 +210,13 @@ void niveau(SDL_Texture **textures)
 int main (int argc, char *argv[])
 {
 	/*------------------------------------*/
-	int j=1,s1,s2;
+	int j=1,s1,s2,h,w;
 	SDL_Surface *surface=NULL;
 	SDL_Event event;
 	SDL_Texture *textures[10];
 	SDL_Renderer *renderer;
-	Button *MainMenu[3] = {
-		CreateButton(1, 50, 10, 2, 2, 0, 0, "start"),
-		CreateButton(2, 50, 10, 2, 2, 0, 50, "editeur de niveau"),
-		CreateButton(3, 50, 10, 2, 2, 0, 100, "exit")};
+	Button *MainMenu[3];
+	
 	/*------------------------------------*/
 
 	/*------------------------------------*/
@@ -236,8 +235,7 @@ int main (int argc, char *argv[])
 		SDL_WINDOWPOS_CENTERED,
 		*width, *height,
 		0);
-	free(height);
-	free(width);
+
 	if(ecran==NULL)
 		SDL_stop("ecran non aloue",NULL);
 	
@@ -265,7 +263,12 @@ int main (int argc, char *argv[])
 	textures[7]=TextureFromImage("../img/2.gif");
 	textures[8]=TextureFromImage("../img/3.gif");
 	textures[9]=TextureFromImage("../img/images.png");
-	
+
+	MainMenu[0] = CreateButton(1, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 100, "Start               ");
+	MainMenu[1] = CreateButton(2, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 50 , "Editeur de niveau");
+	MainMenu[2] = CreateButton(3, 50, 10, 2, 2, *width / 2 - 100, *height / 2      , "Exit                ");
+	free(height);
+	free(width);
 	while(j)
 	{
 		switch(menuButton(3,MainMenu))
@@ -292,5 +295,6 @@ int main (int argc, char *argv[])
 	SDL_DestroyWindow(ecran);
 	TTF_Quit();
 	SDL_Quit();
+
 	return 0;
 }

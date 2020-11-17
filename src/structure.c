@@ -27,6 +27,7 @@ Button *CreateButton(int value, int padinx, int padiny, int marginx, int marginy
 	button->test = RGBToColor(50,0,225,225);
 	button->ombre = RGBToColor(0, 225, 50,225);
 	button->couleur=RGBToColor(225, 50,0,225);
+	return button;
 }
 
 SDL_Color RGBToColor(int r, int g, int b, int a)
