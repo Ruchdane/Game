@@ -63,9 +63,10 @@ Pile* Pinverse(Pile* pile)
 int Linitialiser (Level *niveau,int j)
 {
 	char c;
-	int s=0,s1,s2,s3,*nivo=calloc(niveau->resolution.x,sizeof(int));
+	int s=0,s1,s2,s3,*nivo;
 	FILE *niveaux=NULL;
-	niveau->id=j;
+
+	niveau->id = j;
 	/*Bon les commentaire c'est pas mon fort
 	donc je charge les nombre ecrit sur TAILLE bit 
 	je les charges dans TAILLE tableau chaque nombre
@@ -99,7 +100,9 @@ int Linitialiser (Level *niveau,int j)
 	fscanf(niveaux,"(%d,%d),",&niveau->resolution.x,&niveau->resolution.y);
 	niveau->t=Minitialiser(niveau->resolution.x,niveau->resolution.y);
 	fscanf(niveaux,"%d,",&niveau->np);/*Le nombre de perle qu'il y a*/
-
+	while(nivo==NULL)
+		nivo=malloc(niveau->resolution.x * sizeof(int));
+		
 	for(s1=0;s1!=niveau->resolution.x;s1++)
 		fscanf(niveaux,"%d,",&nivo[s1]);
 	
