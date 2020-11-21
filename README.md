@@ -1,6 +1,6 @@
 # Mario sokoban avec SDL2
 
-Mario sokoban avec SDL2 est mon approche de ce que propose **Matéo** de **Open clasroom** dans le livre *Apprenez à programmer en language C* \
+Mario sokoban avec SDL2 est mon approche de ce que propose **Matéo** de **Open clasroom** dans le livre *Apprendre à programmer en language C* \
 Le projet utilise sdl2 sdl2_ttf et sdl2 image
 
 ## Sous Windows
