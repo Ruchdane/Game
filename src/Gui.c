@@ -132,7 +132,7 @@ int menuButton(int bn,Button **B)
 		SDL_SetRenderDrawColor(renderer, 225, 225, 225, 225);
 		SDL_RenderClear(renderer);
 			
-		}while(event.type!=SDL_QUIT && k==0);
+		}while(event.type!=SDL_QUIT && k==0 && NotQuit(event));
 		
 		TTF_CloseFont(writer);
 		for (i = 0; i < bn;i++)
@@ -147,7 +147,7 @@ void renderLevel (Level *niveau,int j,SDL_Texture **textures)
 	static int isInitialised;
 	SDL_Window *ecran = GetWindow();
 	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
-	Vector2 Screnres;
+	static Vector2 Screnres;
 	int s1=0,s2=0,b=1,k;
 	SDL_Rect cadre={0,0,34,34};
 	if(!isInitialised)
