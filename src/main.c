@@ -13,14 +13,14 @@ void jouer(SDL_Texture **textures ,int k)
 	int s,j=0;
 	Level *niveau;
 	Button *Buttons[4];
-
-	Buttons[0] = CreateButton(k + 1, 50, 10, 2, 2, 0, 0, "suivant");
-	Buttons[1] = CreateButton(Failed_case, 50, 10, 2, 2, 0, 150, "exit");
-	Buttons[2] = CreateButton(k, 50, 10, 2, 2, 0, 100, "rejouer");
-	Buttons[3] = CreateButton(k - 1, 50, 10, 2, 2, 0, 50, "precedent");
+	SDL_GetWindowSize(GetWindow(),&s,&j);
+	Buttons[0] = CreateButton(k + 1, 50, 10, 2, 2, (s-50)/2,j/2 -100, "suivant");
+	Buttons[1] = CreateButton(Failed_case, 50, 10, 2, 2, (s-50)/2, j/2+50, "   exit   ");
+	Buttons[2] = CreateButton(k, 50, 10, 2, 2, (s-50)/2, j/2, "rejouer");
+	Buttons[3] = CreateButton(k - 1, 50, 10, 2, 2, (s-50)/2, j/2-50, "precedent");
 	niveau = malloc(sizeof(*niveau));
 
-	for(;k!=Failed_case;)
+	for(j=0;k!=Failed_case;)
 	{
 		if(Linitialiser(niveau,k))
 		{
@@ -49,24 +49,21 @@ void jouer(SDL_Texture **textures ,int k)
 
 					renderLevel(niveau,j,textures);
 					SDL_RenderPresent(renderer);
-					SDL_RenderClear(renderer);
-
-			}while( niveau->np);
+					ClearScreen();
+			}while( niveau->np && NotQuit(event));
 		if(!niveau->np)
 			{
 
 				SDL_RenderClear(renderer);
-				om.y=0;
-				om.x=0;
-				om.w=PIX;
-				om.h=PIX;
-				SDL_RenderCopy(renderer,textures[9],NULL,&om);
+				
+				
+				SDL_RenderCopy(renderer,textures[9],NULL,NULL);
 				SDL_RenderPresent(renderer);
 				do
 				{
 					SDL_WaitEvent(&event);
 				}
-				while (event.type!=SDL_KEYDOWN);
+				while (event.type!=SDL_KEYDOWN && NotQuit(event));
 					
 				SDL_RenderClear(renderer);
 				if(k!=1)
@@ -120,7 +117,7 @@ void niveau(SDL_Texture **textures)
 		
 	do
 	{
-		SDL_WaitEvent(&event);
+		SDL_PollEvent(&event);
 	
 		while(event.type==SDL_KEYDOWN)
 		{
@@ -156,7 +153,7 @@ void niveau(SDL_Texture **textures)
 			SDL_RenderPresent(renderer);
 	
 			while(event.type!=SDL_KEYDOWN)
-				SDL_WaitEvent(&event);	     
+				SDL_PollEvent(&event);	     
 	
 			while(event.type==SDL_KEYDOWN)
 			{
@@ -192,10 +189,10 @@ void niveau(SDL_Texture **textures)
 				}
 				
 				renderLevel(niveau,0,textures);
-				SDL_WaitEvent(&event);
+				SDL_PollEvent(&event);
 			}
 		}
-	}while(event.key.keysym.sym!=SDLK_ESCAPE);
+	}while(event.key.keysym.sym!=SDLK_ESCAPE && NotQuit(event));
 	if(SDL_SetRenderDrawColor(renderer,0,0,0,225)==-1)
 		{
 			for(int i=0;i!=10;i++)
@@ -264,9 +261,9 @@ int main (int argc, char *argv[])
 	textures[8]=TextureFromImage("../img/3.gif");
 	textures[9]=TextureFromImage("../img/images.png");
 
-	MainMenu[0] = CreateButton(1, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 100, "Start               ");
-	MainMenu[1] = CreateButton(2, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 50 , "Editeur de niveau");
-	MainMenu[2] = CreateButton(3, 50, 10, 2, 2, *width / 2 - 100, *height / 2      , "Exit                ");
+	MainMenu[0] = CreateButton(1, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 100, "          Start            ");
+	MainMenu[1] = CreateButton(2, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 50 ,            "Editeur de niveau");
+	MainMenu[2] = CreateButton(3, 50, 10, 2, 2, *width / 2 - 100, *height / 2      , "             Exit            ");
 	free(height);
 	free(width);
 	while(j)
