@@ -10,15 +10,19 @@ void jouer(SDL_Texture **textures ,int k)
 	SDL_Renderer *renderer = SDL_GetRenderer(GetWindow());
 	SDL_Event event;
 	Pile *actions;
-	int s,j=0;
+	int s,j=0,*count;
 	Level *niveau;
-	Button *Buttons[4];
+	Button *Buttons[4],*tmpButtons[3];
 	SDL_GetWindowSize(GetWindow(),&s,&j);
 	Buttons[0] = CreateButton(k + 1, 50, 10, 2, 2, (s-50)/2,j/2 -100, "suivant");
 	Buttons[1] = CreateButton(Failed_case, 50, 10, 2, 2, (s-50)/2, j/2+50, "   exit   ");
 	Buttons[2] = CreateButton(k, 50, 10, 2, 2, (s-50)/2, j/2, "rejouer");
 	Buttons[3] = CreateButton(k - 1, 50, 10, 2, 2, (s-50)/2, j/2-50, "precedent");
+	tmpButtons[0]=Buttons[1];
+	tmpButtons[1]=Buttons[2];
+	tmpButtons[2]=Buttons[3];
 	niveau = malloc(sizeof(*niveau));
+	count=getSettings("Game","levelCount");
 
 	for(j=0;k!=Failed_case;)
 	{
@@ -65,9 +69,15 @@ void jouer(SDL_Texture **textures ,int k)
 				}
 				while (event.type!=SDL_KEYDOWN && NotQuit(event));
 					
+				Buttons[0]->value=k+1;
+				Buttons[2]->value=k;
+				Buttons[3]->value=k-1;
+
 				SDL_RenderClear(renderer);
 				if(k!=1)
 					k=menuButton(4,Buttons);
+				else if(k==*count)
+					k=menuButton(3,tmpButtons);
 				else
 					k=menuButton(3,Buttons);
 				
