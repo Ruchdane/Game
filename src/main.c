@@ -97,23 +97,30 @@ void jouer(SDL_Texture **textures ,int k)
 void niveau(SDL_Texture **textures)
 {
 	SDL_Event event;
-	SDL_Renderer *renderer = SDL_GetRenderer(GetWindow());
+	SDL_Window *window=GetWindow();
+	SDL_Renderer *renderer = SDL_GetRenderer(window);
 	FILE *file;
 	int s,s1,s2;
-	int *height=getSettings("screenSetting","height"),*width=getSettings("screenSetting","width");
+	int height,width;
 	SDL_Rect om;
 	Level *niveau=malloc(sizeof(*niveau));
-	printf("resolution de votre niveau ");
-	printf("\nLa profondeur :");
-	scanf("%d",&niveau->resolution.x);
-	printf("\nLa largeur :");
-	scanf("%d",&niveau->resolution.y);
+	SDL_GetWindowSize(window,&width,&height);
+	niveau->resolution.x=8;
+	niveau->resolution.y=8;
+	/*ToDo
+	* Add a prompt to adsk for value
+		printf("resolution de votre niveau ");
+		printf("\nLa profondeur :");
+		scanf("%d",&niveau->resolution.x);
+		printf("\nLa largeur :");
+		scanf("%d",&niveau->resolution.y);
+	*Add a help prompt everywhere
+	*/
 
 	niveau->t=Minitialiser(niveau->resolution.x,niveau->resolution.y);
-	om.h=*height/niveau->resolution.x;
-	om.w=*width/niveau->resolution.y;
-	free(height);
-	free(width);
+	om.h=height/niveau->resolution.x;
+	om.w=width/niveau->resolution.y;
+
 	niveau->np=0;
 	if(SDL_SetRenderDrawColor(renderer,0,0,225,1)==-1)
 		{
