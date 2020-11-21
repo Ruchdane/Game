@@ -85,12 +85,11 @@ int menuButton(int bn,Button **B)
 	SDL_Renderer *renderer = SDL_GetRenderer(ecran);
 	int height = 20, state = 0, pstate = 0, i = 0, j, k = 0;
 	SDL_Event event;
-	TTF_Font *writer;
+	TTF_Font *writer=NULL;
 	if (B == NULL)
 		return 0;
-	writer = TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf", height);
-	if (writer == NULL)
-		printf("Font could not be loaded");
+	while (writer == NULL)
+		writer = TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf", height);
 	do
 	{
 		SDL_PollEvent(&event);
@@ -135,8 +134,6 @@ int menuButton(int bn,Button **B)
 		}while(event.type!=SDL_QUIT && k==0 && NotQuit(event));
 		
 		TTF_CloseFont(writer);
-		for (i = 0; i < bn;i++)
-			free(B[i]);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 225);
 		return k;
 }
