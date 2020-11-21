@@ -63,7 +63,7 @@ Pile* Pinverse(Pile* pile)
 int Linitialiser (Level *niveau,int j)
 {
 	char c;
-	int s=0,s1,s2,s3,*nivo;
+	int s=0,s1,s2,s3,*nivo=NULL;
 	FILE *niveaux=NULL;
 
 	niveau->id = j;
@@ -193,7 +193,9 @@ void Pfree(Pile *pile)
 	if(pile==NULL)
 		return;
 	
-	for(elt=pile->premier;elt!=NULL;depiler(pile),elt=elt->suivant);
+	for(;pile->premier!=NULL;)
+		depiler(pile);
+	free(pile);
 }
 
 int **Minitialiser(int size,int seze)
