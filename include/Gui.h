@@ -12,7 +12,7 @@
 #include "main.h"
 #include "utilitaires.h"
 
-void renderLevel(Level *niveau, int j,SDL_Texture **textures);
+void renderLevel(Level *niveau, int j, SDL_Texture **textures);
 int renderButton(Button button, TTF_Font *writer, int state);
 int menuButton(int bn, Button **B);
 
