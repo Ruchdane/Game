@@ -100,21 +100,22 @@ void niveau(SDL_Texture **textures)
 	SDL_Window *window=GetWindow();
 	SDL_Renderer *renderer = SDL_GetRenderer(window);
 	FILE *file;
-	int s,s1,s2;
+	int s,s1=0,s2=0;
 	int height,width;
 	SDL_Rect om;
 	Level *niveau=malloc(sizeof(*niveau));
 	SDL_GetWindowSize(window,&width,&height);
-	niveau->resolution.x=8;
-	niveau->resolution.y=8;
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+	niveau->resolution.x=9;
+	niveau->resolution.y=9;
 	/*ToDo
 	* Add a prompt to adsk for value
+	* Add a help prompt everywhere
 		printf("resolution de votre niveau ");
 		printf("\nLa profondeur :");
 		scanf("%d",&niveau->resolution.x);
 		printf("\nLa largeur :");
 		scanf("%d",&niveau->resolution.y);
-	*Add a help prompt everywhere
 	*/
 
 	niveau->t=Minitialiser(niveau->resolution.x,niveau->resolution.y);
@@ -122,7 +123,7 @@ void niveau(SDL_Texture **textures)
 	om.w=width/niveau->resolution.y;
 
 	niveau->np=0;
-	if(SDL_SetRenderDrawColor(renderer,0,0,225,1)==-1)
+	if(SDL_SetRenderDrawColor(renderer,0,0,225,112)==-1)
 		{
 			for(int i=0;i!=10;i++)
 				SDL_DestroyTexture(textures[i]);
@@ -134,11 +135,10 @@ void niveau(SDL_Texture **textures)
 		
 	do
 	{
-		SDL_PollEvent(&event);
+		SDL_WaitEvent(&event);
 	
-		while(event.type==SDL_KEYDOWN)
-		{
-				switch(event.key.keysym.sym)
+		if(event.type==SDL_KEYDOWN)
+			switch(event.key.keysym.sym)
 			{
 				case SDLK_UP:
 					s1--;
@@ -155,60 +155,52 @@ void niveau(SDL_Texture **textures)
 				case SDLK_LEFT:
 					s2--;
 				break;
-				
 				default:
 				break;
 			}
-
+		
+		
+		
 			s1=nohomo(s1,niveau->resolution.x);
 			s2=nohomo(s2,niveau->resolution.y);
 			om.x=s2*om.w;
 			om.y=s1*om.h;
-
-			SDL_SetRenderDrawColor(renderer,0,0,225,0);
+			SDL_SetRenderDrawColor(renderer,0,0,225,112);
 			SDL_RenderFillRect(renderer,&om);
 			SDL_RenderPresent(renderer);
-	
-			while(event.type!=SDL_KEYDOWN)
-				SDL_PollEvent(&event);	     
-	
-			while(event.type==SDL_KEYDOWN)
+
+		if(event.type==SDL_KEYDOWN)
+			switch(event.key.keysym.sym)
 			{
-				switch(event.key.keysym.sym)
-				{
-					case SDLK_KP_0:
-						niveau->t[s1][s2]=0;
-					break;
-					
-					case SDLK_KP_1:
-						niveau->t[s1][s2]=1;
-					break;
-					
-					case SDLK_KP_2:
-					niveau->np++;
-						niveau->t[s1][s2]=2;
-					break;
-					
-					case SDLK_KP_3:
-						niveau->t[s1][s2]=3;
-					break;
-					
-					case SDLK_KP_4:
-						niveau->t[s1][s2]=4;
-					break;
-					
-					case SDLK_KP_5:
-						niveau->t[s1][s2]=5;
-					break;
-					
-					default:
-					break;
-				}
+				case SDLK_KP_0:
+					niveau->t[s1][s2]=0;
+				break;
 				
-				renderLevel(niveau,0,textures);
-				SDL_PollEvent(&event);
+				case SDLK_KP_1:
+					niveau->t[s1][s2]=1;
+				break;
+				
+				case SDLK_KP_2:
+					niveau->np++;
+					niveau->t[s1][s2]=2;
+				break;
+				
+				case SDLK_KP_3:
+					niveau->t[s1][s2]=3;
+				break;
+				
+				case SDLK_KP_4:
+					niveau->t[s1][s2]=4;
+				break;
+				
+				case SDLK_KP_5:
+					niveau->t[s1][s2]=5;
+				break;
+				default:
+				break;
 			}
-		}
+		
+		renderLevel(niveau,0,textures);
 	}while(event.key.keysym.sym!=SDLK_ESCAPE && NotQuit(event));
 	if(SDL_SetRenderDrawColor(renderer,0,0,0,225)==-1)
 		{
