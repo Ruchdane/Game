@@ -9,7 +9,7 @@ il vous faut juste gcc le reste est dans le projet
 
 ### Pour installer gcc
 
-[Cliker ici](http://www.mingw.org/wiki/howto_install_the_mingw_gcc_compiler_suite)
+[Cliquer ici](http://www.mingw.org/wiki/howto_install_the_mingw_gcc_compiler_suite)
 
 ## Sous Linux
 
