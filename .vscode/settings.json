@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "sdl.h": "c",
+        "sdl_ttf.h": "c",
+        "fonction.h": "c",
+        "polynome.h": "c",
+        "sdl_image.h": "c",
+        "type_traits": "c",
+        "structure.h": "c"
+    }
+}
