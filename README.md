@@ -1,11 +1,11 @@
 # Mario sokoban avec SDL2
 
-Est mon approche de ce que propose **Matéo** de **Open clasroom** dans le livre *Apprenez a programmer en language C* \
+Mario sokoban avec SDL2 est mon approche de ce que propose **Matéo** de **Open clasroom** dans le livre *Apprenez a programmer en language C* \
 Le projet utilise sdl2 sdl2_ttf et sdl2 image
 
 ## Sous Windows
 
-il vous faut gcc les dll et les lib sont dans le projet
+il vous faut juste gcc le reste est dans le projet
 
 ### Pour installer gcc
 
@@ -13,7 +13,7 @@ il vous faut gcc les dll et les lib sont dans le projet
 
 ## Sous Linux
 
-**Disclaimer** je ne travaille pas avec une distribution de linux donc vous etes prévenus:expressionless:
+**Disclaimer** je ne travaille pas avec une distribution de linux donc vous êtes prévenus:expressionless:
 
 ### Pour installer sdl2 sdl_ttf et sdl_image
 
