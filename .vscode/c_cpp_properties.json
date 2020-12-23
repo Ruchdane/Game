@@ -4,8 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "C:/MinGW/include",
-                "${workspaceFolder}\\include",
-                "${workspaceFolder}\\include\\SDL"
+                "include",
+                "include/SDL"
             ],
             "defines": [
                 "_DEBUG",
@@ -13,6 +13,13 @@
                 "_UNICODE"
             ],
             "intelliSenseMode": "msvc-x64"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "include"
+            ],  
+            "intelliSenseMode": "gcc-x64"
         }
     ],
     "version": 4

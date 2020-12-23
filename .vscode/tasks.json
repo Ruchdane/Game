@@ -32,6 +32,18 @@
 			"type": "shell",
 			"command": ".\\bin\\mario",
 			"group": "test"
+		},
+		{
+			"label": "Make",
+			"group": "build",
+			"type": "shell",
+			"command": "make",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher":[
+				"$gcc",
+			]
 		}
 	]
 }
