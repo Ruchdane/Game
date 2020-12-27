@@ -2,6 +2,8 @@
 #define FONCTION_MINIM
 
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include "stdlib.h"
 #include "SDL.h"
 #include "SDL_image.h"
@@ -16,5 +18,7 @@ SDL_Texture *TextureFromImage(char *title);
 void SDL_stop(const char *message, SDL_Texture *texture);
 
 void translate(Level *nivo); //transforme un tableau en donner l'ecrit en memoire voir 'perso'
+
+int monitor();
 
 #endif

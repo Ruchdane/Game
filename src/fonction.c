@@ -86,3 +86,15 @@ void translate(Level *nivo)
 
 	fclose(niveau);
 }
+
+int monitor()
+{
+	int id;
+	#ifdef unix
+	char *command = malloc(100 * sizeof(char));
+	sprintf(command,"gnome-terminal -- top -p %d",getpid());
+	id = system(command);
+	free(command);
+	#endif 
+	return id;
+}

@@ -207,6 +207,8 @@ void niveau(SDL_Texture **textures)
 
 int main(int argc, char *argv[])
 {
+	
+	monitor();
 	/*------------------------------------*/
 	int j = 1, s1, s2, h, w;
 	SDL_Surface *surface = NULL;
