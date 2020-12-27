@@ -34,11 +34,7 @@ void *getSettings(char *section, char *parametre)
 	char *stmp;
 	int *itmp;
 
-	if (stmp == NULL)
-	{
-		printf("chaine temporaire non alloue");
-		return NULL;
-	}
+	
 
 	if ((file = fopen("settings.ini", "r")) == NULL)
 	{
