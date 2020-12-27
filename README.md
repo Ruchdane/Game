@@ -18,9 +18,7 @@ il vous faut juste gcc le reste est dans le projet
 ### Pour installer sdl2 sdl_ttf et sdl_image
 
 ```Bash
-apt-get install libsdl2-dev
-apt-get install libsdl2-ttf-dev
-apt-get install libsdl2-image-dev
+sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
 ```
 
 ## Pour compiller
