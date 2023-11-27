@@ -1,3 +1,4 @@
 *.o
 mario
 mario.exe
+bin/*
