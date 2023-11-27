@@ -1,13 +1,14 @@
 #ifndef RUCHDANEGUI
 #define RUCHDANEGUI
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 #include "rule.h"
 #include "ini.h"
-#include <stdio.h>
-#include "stdlib.h"
-#include "stdarg.h"
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
 #include "structure.h"
 #include "main.h"
 #include "utilitaires.h"

@@ -1,8 +1,8 @@
 #ifndef RUCHDANEUTIL
 #define RUCHDANEUTIL
 #include <stdio.h>
-#include "stdlib.h"
-#include "SDL.h"
+#include <stdlib.h>
+#include <SDL2/SDL.h>
 #include "structure.h"
 #include "main.h"
 int PositionInButtons(Button button, Vector2 position);

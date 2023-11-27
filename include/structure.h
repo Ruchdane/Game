@@ -1,8 +1,8 @@
 #ifndef RUCHDANESTRUCT
 #define RUCHDANESTRUCT
 #include <stdio.h>
-#include "stdlib.h"
-#include "SDL.h"
+#include <stdlib.h>
+#include <SDL2/SDL.h>
 
 typedef struct
 {
