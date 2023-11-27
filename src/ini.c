@@ -27,7 +27,7 @@ void unamed1(FILE *file, const char *str, const char cha, const char not )
 		}
 	}
 }
-
+// TODO Add an ini file for asset path
 void *getSettings(char *section, char *parametre)
 {
 	FILE *file = NULL;

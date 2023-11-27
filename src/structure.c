@@ -80,7 +80,7 @@ int Linitialiser(Level *niveau, int j)
 
 	if (j > 0) /*j represente le niveau*/
 	{
-		niveaux = fopen("../niveaux/niveau", "r");
+		niveaux = fopen("./niveaux/niveau", "r");
 
 		for (j--; j; j--)
 		{
@@ -92,7 +92,7 @@ int Linitialiser(Level *niveau, int j)
 
 	else
 	{
-		niveaux = fopen("../niveaux/perso", "r");
+		niveaux = fopen("./niveaux/perso", "r");
 	}
 
 	fscanf(niveaux, "(%d,%d),", &niveau->resolution.x, &niveau->resolution.y);

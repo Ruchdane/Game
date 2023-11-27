@@ -88,8 +88,9 @@ int menuButton(int bn, Button **B)
 	TTF_Font *writer = NULL;
 	if (B == NULL)
 		return 0;
+	// FIXME Boucle infini si la ressource n'est pas retrouvée
 	while (writer == NULL)
-		writer = TTF_OpenFont("../Font/Champagne & Limousines Bold.ttf", height);
+		writer = TTF_OpenFont("./Font/Champagne & Limousines Bold.ttf", height);
 	do
 	{
 		SDL_PollEvent(&event);

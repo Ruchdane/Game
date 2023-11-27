@@ -207,8 +207,8 @@ void niveau(SDL_Texture **textures)
 
 int main(int argc, char *argv[])
 {
-	
-	monitor();
+
+	// monitor();
 	/*------------------------------------*/
 	int j = 1, s1, s2, h, w;
 	SDL_Surface *surface = NULL;
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 	if (ecran == NULL)
 		SDL_stop("ecran non aloue", NULL);
 
-	surface = IMG_Load("../img/mur.png");
+	surface = IMG_Load("./img/mur.png");
 	if (surface == NULL)
 		SDL_stop("L'image n'as pas pu etre charger", NULL);
 
@@ -252,16 +252,16 @@ int main(int argc, char *argv[])
 		SDL_stop("desinateur non  aloue", NULL);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-	textures[0] = TextureFromImage("../img/vide.png");
-	textures[1] = TextureFromImage("../img/mur.png");
-	textures[2] = TextureFromImage("../img/objectif.png");
-	textures[3] = TextureFromImage("../img/0.png");
-	textures[4] = TextureFromImage("../img/1.png");
-	textures[5] = TextureFromImage("../img/0.gif");
-	textures[6] = TextureFromImage("../img/1.gif");
-	textures[7] = TextureFromImage("../img/2.gif");
-	textures[8] = TextureFromImage("../img/3.gif");
-	textures[9] = TextureFromImage("../img/images.png");
+	textures[0] = TextureFromImage("./img/vide.png");
+	textures[1] = TextureFromImage("./img/mur.png");
+	textures[2] = TextureFromImage("./img/objectif.png");
+	textures[3] = TextureFromImage("./img/0.png");
+	textures[4] = TextureFromImage("./img/1.png");
+	textures[5] = TextureFromImage("./img/0.gif");
+	textures[6] = TextureFromImage("./img/1.gif");
+	textures[7] = TextureFromImage("./img/2.gif");
+	textures[8] = TextureFromImage("./img/3.gif");
+	textures[9] = TextureFromImage("./img/images.png");
 
 	MainMenu[0] = CreateButton(1, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 100, "          Start            ");
 	MainMenu[1] = CreateButton(2, 50, 10, 2, 2, *width / 2 - 100, *height / 2 - 50, "Editeur de niveau");
